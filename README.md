@@ -1,6 +1,6 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+This README would normally document whatever steps are necessary to get this application up and running. Unfortunately the application doesn't exist yet ;-)
 
 ### What is this repository for? ###
 

@@ -6,9 +6,6 @@
   <component name="JythonHelperConfig">
     <option name="targetDirectory" value="" />
   </component>
-  <component name="ProjectDictionaryState">
-    <dictionary name="sb" />
-  </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
       <profile-state>
@@ -25,7 +22,7 @@
       </profile-state>
     </entry>
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.4.0 virtualenv at ~/Development/projects/discrete" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.4.1 virtualenv at ~/Development/projects/PyMindMonitor/venv (1)" project-jdk-type="Python SDK" />
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
       <console-settings is-module-sdk="true">

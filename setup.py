@@ -7,7 +7,7 @@ setup(
     package_dir={'': 'mind_monitor'},
     url='https://bitbucket.org/sb_/pymindmonitor',
     license='MIT',
-    author='sb',
+    author='Stefan Braun',
     author_email='sb@action.ms',
-    description='Mindwave interface.'
+    description='Mindwave interface'
 )

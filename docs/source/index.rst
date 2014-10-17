@@ -11,7 +11,9 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-
+   tutorial
+   api
+   lessons_learned
 
 Indices and tables
 ==================

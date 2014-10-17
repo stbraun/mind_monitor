@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/PyMindMonitor.iml" filepath="$PROJECT_DIR$/.idea/PyMindMonitor.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/PyNeuroSky.iml" filepath="$PROJECT_DIR$/.idea/PyNeuroSky.iml" />
     </modules>
   </component>
 </project>

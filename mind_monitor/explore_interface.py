@@ -148,7 +148,11 @@ def plot_raw_eeg_data(data):
     :param data: values to plot.
     :type: [float]
     """
-    plt.plot(data, enumerate(data)[0], 'b.')
+    x_data = [x for x,y in enumerate(data)]
+    plt.plot(x_data, data, 'b-')
+    plt.xlabel("time")
+    plt.ylabel("raw EEG values")
+    plt.title("EEG Data")
     # plt.xlim(min(x_data) - 1, max(x_data) + 1)
     # plt.ylim(min(y_data) - 1, max(y_data) + 1)
     plt.show()
@@ -167,7 +171,7 @@ def main(argv):
                 jres['time'] = time.time()
                 print(repr(jres))
                 try:
-                    raw_eeg_data.append(jres['raeEeg'])
+                    raw_eeg_data.append(jres['rawEeg'])
                 except KeyError:
                     pass
                 eeg.insert(jres)

@@ -142,26 +142,30 @@ def connect_to_eeg_db():
     return con, db, eeg
 
 
-def plot_raw_eeg_data(data):
-    """Plot data as line plot.
+def plot_raw_eeg_data(time_data, eeg_data):
+    """Plot eeg_data as line plot.
 
-    :param data: values to plot.
-    :type: [float]
+    :param time_data: relative time info for data points in seconds.
+    :type time_data: [float]
+    :param eeg_data: values to plot.
+    :type eeg_data: [float]
     """
-    x_data = [x for x,y in enumerate(data)]
-    plt.plot(x_data, data, 'b-')
-    plt.xlabel("time")
+    plt.plot(time_data, eeg_data, 'g-')
+    plt.xlabel("time [secs]")
     plt.ylabel("raw EEG values")
     plt.title("EEG Data")
     # plt.xlim(min(x_data) - 1, max(x_data) + 1)
     # plt.ylim(min(y_data) - 1, max(y_data) + 1)
     plt.show()
 
+
 def main(argv):
     logger.info("Application started.")
     sock = connect_to_eeg_server(enable_raw_output=True)
     con, db, eeg = connect_to_eeg_db()
     raw_eeg_data = []
+    time_data = []
+    base_time = None
     while True:
         try:
             buf = sock.recv(1024)
@@ -172,6 +176,9 @@ def main(argv):
                 print(repr(jres))
                 try:
                     raw_eeg_data.append(jres['rawEeg'])
+                    if not base_time:
+                        base_time = jres['time']
+                    time_data.append(jres['time'] - base_time)
                 except KeyError:
                     pass
                 eeg.insert(jres)
@@ -183,7 +190,7 @@ def main(argv):
     con.close()
     sock.close()
     logger.info("Shutdown finished.")
-    plot_raw_eeg_data(raw_eeg_data)
+    plot_raw_eeg_data(time_data, raw_eeg_data)
     return 0
 
 if __name__ == '__main__':

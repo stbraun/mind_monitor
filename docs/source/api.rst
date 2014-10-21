@@ -8,7 +8,7 @@ API Reference
    :members:
    :member-order: bysource
 
-.. automodule:: mind_monitor.explore_interface
+.. automodule:: mind_monitor.log
    :members:
    :member-order: bysource
 

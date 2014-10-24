@@ -11,7 +11,7 @@ from mindwave_interface import connect_to_eeg_server, cleanup_raw_data
 from monitor_db import connect_to_eeg_db
 from monitor_plot import plot_raw_eeg_data
 
-
+# TODO remove logic from main()
 def main(args):
     """Simple monitoring app."""
     log.initialize_logger()

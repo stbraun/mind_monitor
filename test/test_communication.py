@@ -1,4 +1,4 @@
-"""Test the communication with mindwave device via sockets"""
+"""Test the communication with mindwave device via sockets."""
 __author__ = 'sb'
 
 import unittest
@@ -6,7 +6,10 @@ import logging
 import time
 import socket
 
+# TODO specify condition for skipping the test
 
+
+@unittest.skip("Skip because requires running server and is expensive.")
 class TestCommunication(unittest.TestCase):
     """Explore and test communication with mindwave device."""
 

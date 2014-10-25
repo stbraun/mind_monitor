@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<review xmlns="http://plugins.intellij.net/revu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://plugins.intellij.net/revu http://plugins.intellij.net/revu/ns/revu_1_0.xsd" name="Base release 0.1" status="closed" shared="false">
+  <history createdBy="[unknown]" lastUpdatedBy="sb" createdOn="2014-10-21 23:06:45 +0200" lastUpdatedOn="2014-10-24 13:37:53 +0200"/>
+  <goal>Get clean baseline for release.</goal>
+  <referential>
+    <priorities>
+      <priority order="0" name="minor"/>
+      <priority order="1" name="normal"/>
+      <priority order="2" name="major"/>
+      <priority order="3" name="critical"/>
+    </priorities>
+    <tags>
+      <tag name="correctness"/>
+      <tag name="cosmetic"/>
+      <tag name="documentation"/>
+      <tag name="duplication"/>
+      <tag name="maintenability"/>
+      <tag name="optimization"/>
+      <tag name="portability"/>
+      <tag name="question"/>
+      <tag name="standard"/>
+    </tags>
+    <users>
+      <user displayName="sb" login="sb" roles="admin,reviewer,author"/>
+    </users>
+  </referential>
+  <filescope pathPattern="file[*]:*//*&amp;&amp;!file:*/||file:test//*||file:MANIFEST||file:README.md||file:setup.py||file:rq.txt||file:docs/source//*||file:mind_monitor//*"/>
+  <issues>
+    <issue filePath="exploration/explore_interface.py" summary="Remove file from package." vcsRev="5ef12e75f62487c77d627b31d7fb73c9e5908346" lineStart="-1" lineEnd="-1" hash="0" priority="normal" status="closed" assignees="sb">
+      <history createdBy="sb" lastUpdatedBy="sb" createdOn="2014-10-22 12:22:41 +0200" lastUpdatedOn="2014-10-22 12:37:48 +0200"/>
+      <desc>No production code.</desc>
+    </issue>
+    <issue filePath="mind_monitor/mindwave_interface.py" summary="Make server URL configurable" vcsRev="5ef12e75f62487c77d627b31d7fb73c9e5908346" lineStart="25" lineEnd="25" hash="0" priority="normal" status="closed">
+      <history createdBy="sb" lastUpdatedBy="sb" createdOn="2014-10-22 12:25:42 +0200" lastUpdatedOn="2014-10-22 12:25:42 +0200"/>
+      <desc>Extract constant and add default parameter to method initialized with constant.</desc>
+    </issue>
+    <issue filePath="mind_monitor/mindwave_interface.py" summary="Fix warning: shadowing ..." vcsRev="5ef12e75f62487c77d627b31d7fb73c9e5908346" lineStart="27" lineEnd="27" hash="0" priority="minor" status="closed" assignees="sb">
+      <history createdBy="sb" lastUpdatedBy="sb" createdOn="2014-10-22 12:35:16 +0200" lastUpdatedOn="2014-10-22 12:37:41 +0200"/>
+    </issue>
+    <issue filePath="mind_monitor/monitor_db.py" summary="Use correct logger id" vcsRev="5ef12e75f62487c77d627b31d7fb73c9e5908346" lineStart="14" lineEnd="14" hash="0" priority="major" status="closed" assignees="sb">
+      <history createdBy="sb" lastUpdatedBy="sb" createdOn="2014-10-22 12:28:59 +0200" lastUpdatedOn="2014-10-22 12:38:10 +0200"/>
+      <desc>Use &apos;mind_monitor&apos; instead of mindwave to be consistent with package.</desc>
+    </issue>
+    <issue filePath="mind_monitor/monitor_db.py" summary="Consider to make this module more general." vcsRev="5ef12e75f62487c77d627b31d7fb73c9e5908346" localRev="1413974027001" lineStart="-1" lineEnd="-1" hash="0" priority="minor" status="closed" assignees="sb">
+      <history createdBy="sb" lastUpdatedBy="sb" createdOn="2014-10-22 12:33:47 +0200" lastUpdatedOn="2014-10-22 12:37:36 +0200"/>
+      <desc>A couple of assumptions were made:
+ * local mongo server
+ * database name
+ * collection name
+
+*At least* document these assumptions.
+*Better:* make them explicit and overridable.</desc>
+    </issue>
+    <issue filePath="mind_monitor/monitoring.py" summary="Move logic out of main()" vcsRev="5ef12e75f62487c77d627b31d7fb73c9e5908346" lineStart="14" lineEnd="14" hash="0" priority="major" status="closed" assignees="sb">
+      <history createdBy="sb" lastUpdatedBy="sb" createdOn="2014-10-22 12:37:11 +0200" lastUpdatedOn="2014-10-24 13:14:59 +0200"/>
+      <desc>Refactor logic out into class or functions.</desc>
+    </issue>
+  </issues>
+</review>

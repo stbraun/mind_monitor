@@ -9,5 +9,6 @@ setup(
     license='MIT',
     author='Stefan Braun',
     author_email='sb@action.ms',
-    description='Mindwave interface'
+    description='Mindwave interface',
+    requires=['matplotlib', 'PyYaml', 'behave']
 )

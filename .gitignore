@@ -5,3 +5,5 @@ mind_monitor/__pycache__
 dist/*
 build/*
 eeg-1.png
+.idea/workspace.xml
+

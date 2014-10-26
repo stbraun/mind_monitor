@@ -6,4 +6,3 @@ Feature: Visualize data
     When I plot this data
     Then a line plot is generated.
 
-

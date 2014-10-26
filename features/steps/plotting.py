@@ -2,11 +2,11 @@
 __author__ = 'sb'
 
 from behave import given, when, then
-import behave
 
 
 @given('a time series of raw EEG data.')
 def step_impl(context):
+    context.given = 'blue'
     pass
 
 @when('I plot this data')
@@ -16,4 +16,4 @@ def step_impl(context):
 
 @then('a line plot is generated.')
 def step_impl(context):
-    assert
+    assert context.given == 'blues'

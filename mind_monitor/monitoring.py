@@ -53,6 +53,7 @@ def main(args):
                     continue
                 jres['time'] = time.time()
                 jres['session'] = session_key
+                logger.info(jres)
                 try:
                     raw_eeg_data.append(jres['rawEeg'])
                     if not base_time:
@@ -61,6 +62,7 @@ def main(args):
                 except KeyError:
                     pass
                 eeg.insert(jres)
+                logger.info(".")
         except KeyboardInterrupt:
             break
         except Exception as exc:

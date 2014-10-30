@@ -16,4 +16,4 @@ def step_impl(context):
 
 @then('a line plot is generated.')
 def step_impl(context):
-    assert context.given == 'blues'
+    assert False

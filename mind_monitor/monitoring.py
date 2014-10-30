@@ -17,17 +17,18 @@ MAX_QUALITY_LEVEL = 200
 POOR_SIGNAL_LEVEL = 'poorSignalLevel'
 
 
-def create_session(connection, id: str=None, description: str=''):
+def create_session(collection, id: str=None, description: str=''):
     time_stamp = time.strftime('%Y-%m-%d %H:%M:%S')
     if id is None:
         id = time_stamp
     session = {'key': id, 'description': description, 'timestamp': time_stamp}
-    connection.insert(session)
+    collection.insert(session)
     return id
 
 
 def main(args):
     """Simple monitoring app."""
+    # TODO improve argument handling.
     if len(args) > 1:
         session_id = args[1]
     else:

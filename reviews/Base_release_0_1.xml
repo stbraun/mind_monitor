@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <review xmlns="http://plugins.intellij.net/revu" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://plugins.intellij.net/revu http://plugins.intellij.net/revu/ns/revu_1_0.xsd" name="Base release 0.1" status="closed" shared="false">
-  <history createdBy="[unknown]" lastUpdatedBy="sb" createdOn="2014-10-21 23:06:45 +0200" lastUpdatedOn="2014-10-24 13:37:53 +0200"/>
+  <history createdBy="[unknown]" lastUpdatedBy="[unknown]" createdOn="2014-10-21 23:06:45 +0200" lastUpdatedOn="2014-10-24 13:37:53 +0200"/>
   <goal>Get clean baseline for release.</goal>
   <referential>
     <priorities>

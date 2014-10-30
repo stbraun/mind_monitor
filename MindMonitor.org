@@ -7,13 +7,26 @@
 
 
 * Notes [0/0]
-* Tasks [1/3]
+* Tasks [1/4]
 ** DONE Refactor mind monitor [3/3]
    CLOSED: [2014-10-25 Sat 11:09] SCHEDULED: <2014-10-22 Wed>
    - [X] separate eeg code
    - [X] separate database code
    - [X] separate graphics code
-** DOING Feed graphics from database [/]
-   SCHEDULED: <2014-10-25 Sat>
-** NEXT Visualize brain waves [/]
+** NEXT Improve storage of data [0/4]
+        Bundle all records of a session for easy reference and
+        evaluation. Consider one document for a complete
+        session using nested subdocuments.
+   - [ ] specify feature + scenarios
+   - [ ] design master document
+   - [ ] add code to store and retrieve a session (pandas data frame?)
+   - [ ] write simple script to record a session.
+** NEXT Feed graphics from database [0/1]
+        Shall expect a recorded session (data frame?) and some meta
+        data for configuration of graphics.
+   - [ ] specify feature + scenarios
+** NEXT Visualize brain waves [0/1]
+        Provide graphs for alpha, ..., delta waves. Possibly all in
+        the same graph.
+   - [ ] specify feature + scenarios
 * References [0/0]

@@ -2,7 +2,7 @@
 
 Get some data to get a feel for it and see some results.
 """
-from mindwave_interface import connect_to_eeg_server, cleanup_raw_data
+from mindwave_interface import connect_to_eeg_server, clean_raw_data
 from monitor_db import connect_to_eeg_db
 from monitor_plot import plot_raw_eeg_data
 
@@ -44,7 +44,7 @@ def read_json_from_server():
     while loop > 0:
         loop -= 1
         buf = s.recv(1024)
-        records = cleanup_raw_data(buf)
+        records = clean_raw_data(buf)
         for record in records:
             jres = json.loads(record)
             print(repr(jres))
@@ -109,7 +109,7 @@ def main(argv):
     while True:
         try:
             buf = sock.recv(1024)
-            records = cleanup_raw_data(buf)
+            records = clean_raw_data(buf)
             for record in records:
                 jres = json.loads(record)
                 jres['time'] = time.time()

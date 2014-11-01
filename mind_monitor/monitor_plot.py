@@ -12,6 +12,7 @@ def plot_raw_eeg_data(time_data, eeg_data):
     :param eeg_data: values to plot.
     :type eeg_data: [float]
     """
+    plt.figure(figsize=(18, 6))
     plt.plot(time_data, eeg_data, 'g-')
     plt.xlabel("time [secs]")
     plt.ylabel("raw EEG values")

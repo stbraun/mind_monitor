@@ -35,7 +35,7 @@ def connect_to_eeg_server(enable_raw_output: bool=False, url: str=URL, port: int
     return sock_
 
 
-def cleanup_raw_data(buf):
+def clean_raw_data(buf):
     """Clean received data for processing.
 
     Removes trailing whitespace and splits lines to get single records.

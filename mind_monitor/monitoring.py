@@ -7,18 +7,29 @@ import sys
 import time
 
 import log
-from mindwave_interface import connect_to_eeg_server, cleanup_raw_data
+from mindwave_interface import connect_to_eeg_server, clean_raw_data
 from monitor_db import connect_to_eeg_db
 from monitor_plot import plot_raw_eeg_data
 
 # TODO remove logic from main()
+TIMESTAMP_FORMAT = '%Y-%m-%d %H:%M:%S'
 BUFFER_SIZE = 1024
 MAX_QUALITY_LEVEL = 200
 POOR_SIGNAL_LEVEL = 'poorSignalLevel'
 
 
 def create_session(collection, id: str=None, description: str=''):
-    time_stamp = time.strftime('%Y-%m-%d %H:%M:%S')
+    """Create a new session.
+
+    If given, id will be the session id. Otherwise a timestamp will be used
+    to identify the session.
+    :param collection: the collection to store the session record.
+    :param id: (optional) session id.
+    :param description: (optional) description of session.
+    :return: the session id
+    :rtype: str
+    """
+    time_stamp = time.strftime(TIMESTAMP_FORMAT)
     if id is None:
         id = time_stamp
     session = {'key': id, 'description': description, 'timestamp': time_stamp}
@@ -45,7 +56,7 @@ def main(args):
     while True:
         try:
             buf = sock.recv(BUFFER_SIZE)
-            records = cleanup_raw_data(buf)
+            records = clean_raw_data(buf)
             for record in records:
                 jres = json.loads(record)
                 if POOR_SIGNAL_LEVEL in jres and jres[POOR_SIGNAL_LEVEL] >= MAX_QUALITY_LEVEL:

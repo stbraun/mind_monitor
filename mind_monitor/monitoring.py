@@ -7,38 +7,38 @@ import sys
 import time
 
 import log
-from mindwave_interface import connect_to_eeg_server, clean_raw_data
+from mindwave_interface import connect_to_eeg_server, clean_raw_data, eeg_data
 from monitor_db import connect_to_eeg_db
 from monitor_plot import plot_raw_eeg_data
 
 # TODO remove logic from main()
 TIMESTAMP_FORMAT = '%Y-%m-%d %H:%M:%S'
-BUFFER_SIZE = 1024
-MAX_QUALITY_LEVEL = 200
-POOR_SIGNAL_LEVEL = 'poorSignalLevel'
 
 
-def create_session(collection, id: str=None, description: str=''):
+def create_session(collection, session_id: str=None, description: str=''):
     """Create a new session.
 
-    If given, id will be the session id. Otherwise a timestamp will be used
+    If given, session_id will be the session session_id. Otherwise a timestamp will be used
     to identify the session.
     :param collection: the collection to store the session record.
-    :param id: (optional) session id.
+    :param session_id: (optional) session id.
     :param description: (optional) description of session.
-    :return: the session id
+    :return: the session session_id
     :rtype: str
     """
     time_stamp = time.strftime(TIMESTAMP_FORMAT)
-    if id is None:
-        id = time_stamp
-    session = {'key': id, 'description': description, 'timestamp': time_stamp}
+    if session_id is None:
+        session_id = time_stamp
+    session = {'key': session_id, 'description': description, 'timestamp': time_stamp}
     collection.insert(session)
-    return id
+    return session_id
 
 
 def main(args):
-    """Simple monitoring app."""
+    """Simple monitoring app.
+    :param args: command line parameters.
+    :type args: [str]
+    """
     # TODO improve argument handling.
     if len(args) > 1:
         session_id = args[1]
@@ -55,17 +55,8 @@ def main(args):
     base_time = None
     while True:
         try:
-            buf = sock.recv(BUFFER_SIZE)
-            records = clean_raw_data(buf)
-            for record in records:
-                jres = json.loads(record)
-                if POOR_SIGNAL_LEVEL in jres and jres[POOR_SIGNAL_LEVEL] >= MAX_QUALITY_LEVEL:
-                    # ignore bad data
-                    logger.warning("Bad signal quality: {}".format(repr(jres[POOR_SIGNAL_LEVEL])))
-                    continue
-                jres['time'] = time.time()
+            for jres in eeg_data(sock):
                 jres['session'] = session_key
-                logger.info(jres)
                 try:
                     raw_eeg_data.append(jres['rawEeg'])
                     if not base_time:

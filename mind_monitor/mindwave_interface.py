@@ -62,7 +62,6 @@ def eeg_data(sock_):
     """
     while True:
         buf = sock_.recv(BUFFER_SIZE)
-        print('buffer: {}'.format(repr(buf)))
         raw = str(buf, encoding='iso-8859-1').strip()
         jres = json.loads(raw, encoding="utf-8")
         if POOR_SIGNAL_LEVEL in jres and jres[POOR_SIGNAL_LEVEL] >= MAX_QUALITY_LEVEL:

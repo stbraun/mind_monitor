@@ -44,26 +44,37 @@ def main(args):
         session_id = args[1]
     else:
         session_id = None
+    if len(args) > 2:
+        record_raw = True
+    else:
+        record_raw = False
     log.initialize_logger()
     logger = logging.getLogger('mindwave')
     logger.info("Application started.")
-    sock = connect_to_eeg_server(enable_raw_output=True)
+    sock = connect_to_eeg_server(enable_raw_output=record_raw)
     con, db, session, eeg = connect_to_eeg_db()
     session_key = create_session(session, session_id)
-    raw_eeg_data = []
+    eeg_data_set = []
     time_data = []
     base_time = None
     while True:
         try:
             for jres in eeg_data(sock):
                 jres['session'] = session_key
-                try:
-                    raw_eeg_data.append(jres['rawEeg'])
-                    if not base_time:
-                        base_time = jres['time']
-                    time_data.append(jres['time'] - base_time)
-                except KeyError:
-                    pass
+                if record_raw:
+                    try:
+                        eeg_data_set.append(jres['rawEeg'])
+                        if not base_time:
+                            base_time = jres['time']
+                        time_data.append(jres['time'] - base_time)
+                    except KeyError:
+                        pass
+                else:
+                    if 'eegPower' in jres:
+                        eeg_data_set.append(jres['eegPower']['delta'])
+                        if not base_time:
+                            base_time = jres['time']
+                        time_data.append(jres['time'] - base_time)
                 eeg.insert(jres)
                 logger.info(".")
         except KeyboardInterrupt:
@@ -74,7 +85,7 @@ def main(args):
     con.close()
     sock.close()
     logger.info("Shutdown finished.")
-    plot_raw_eeg_data(time_data, raw_eeg_data)
+    plot_raw_eeg_data(time_data, eeg_data_set) # record_raw)
     return 0
 
 if __name__ == '__main__':

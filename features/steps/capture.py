@@ -23,7 +23,6 @@ def connect_via_mock(enable_raw: bool):
         with mock.patch.object(socket.socket, 'send', return_value=None) as mock_send:
             with mock.patch.object(socket.socket, 'recv', return_value=RETURN_VALUE) as mock_recv:
                 sock = mindwave_interface.connect_to_eeg_server(enable_raw)
-                #data = mindwave_interface.eeg_data(sock)
                 for rr in mindwave_interface.eeg_data(sock):
                     print("--> {} : {}".format(type(rr), rr))
                     break

@@ -3,7 +3,7 @@ Feature: Support sessions.
 
   Scenario: As a user I want to start a new session.
     Given system is set up.
-    When I start a measurement
+    When I start a session
     Then all data points captured will be accessible as one set.
 
   Scenario: As a user I want to start a new session with a given id.

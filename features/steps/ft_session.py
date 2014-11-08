@@ -11,12 +11,7 @@ from behave import given, when, then
 
 ID = 'test_id'
 
-
-@given('system is set up.')
-def step_impl(context):
-    pass
-
-@when('I start a measurement')
+@when('I start a session')
 def step_impl(context):
     """Actually just create a session."""
     with mock.patch.object(Collection, 'insert', return_value=None) as mock_collection:
@@ -33,10 +28,10 @@ def step_impl(context):
 @when('starting measurements I enter a session id.')
 def step_impl(context):
     """Actually just create a session."""
-    collection = Collection(Database(MongoClient(), 'blub'), 'eeg')
+    collection = Collection(Database(MongoClient(), 'blu'), 'eeg')
     with mock.patch.object(Collection, 'insert', return_value=None) as mock_collection:
-        context.id = create_session(collection, id=ID)
-    context.coll =  mock_collection.assert_called_once()
+        context.id = create_session(collection, session_id=ID)
+    context.coll = mock_collection.assert_called_once()
 
 @then('all data points captured in this can be accessed using this session id.')
 def step_impl(context):

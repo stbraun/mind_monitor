@@ -1,6 +1,8 @@
 """Interface to the Mindwave EEG ThinkGear Connector."""
 
 # TODO add license
+import time
+
 __author__ = 'sb'
 
 # TODO consider context manager to handle clean-up.
@@ -11,6 +13,9 @@ import logging
 
 PORT = 13854
 URL = '127.0.0.1'
+BUFFER_SIZE = 1024
+MAX_QUALITY_LEVEL = 200
+POOR_SIGNAL_LEVEL = 'poorSignalLevel'
 
 logger = logging.getLogger('mind_monitor.interface')
 
@@ -35,7 +40,7 @@ def connect_to_eeg_server(enable_raw_output: bool=False, url: str=URL, port: int
     return sock_
 
 
-def cleanup_raw_data(buf):
+def clean_raw_data(buf):
     """Clean received data for processing.
 
     Removes trailing whitespace and splits lines to get single records.
@@ -48,6 +53,24 @@ def cleanup_raw_data(buf):
     raw = str(buf, encoding='iso-8859-1').strip()
     records = raw.splitlines()
     return records
+
+
+def eeg_data(sock_):
+    """Retrieve eeg data provide it a record per call.
+    :param sock_: connection to ThinkGear Connector.
+    :type sock_: socket.socket.
+    """
+    while True:
+        buf = sock_.recv(BUFFER_SIZE)
+        raw = str(buf, encoding='iso-8859-1').strip()
+        jres = json.loads(raw, encoding="utf-8")
+        if POOR_SIGNAL_LEVEL in jres and jres[POOR_SIGNAL_LEVEL] >= MAX_QUALITY_LEVEL:
+            # ignore bad data
+            logger.warning("Bad signal quality: {}".format(repr(jres[POOR_SIGNAL_LEVEL])))
+            continue
+        jres['time'] = time.time()
+        logger.info(' yielding {}'.format(jres))
+        yield jres
 
 
 if __name__ == '__main__':

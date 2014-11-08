@@ -85,7 +85,7 @@ def main(args):
     con.close()
     sock.close()
     logger.info("Shutdown finished.")
-    plot_raw_eeg_data(time_data, eeg_data_set) # record_raw)
+    plot_raw_eeg_data(time_data, eeg_data_set)
     return 0
 
 if __name__ == '__main__':

@@ -1,17 +1,15 @@
 """Monitoring EEG."""
 
 # TODO add licencse
-import json
 import logging
 import sys
 import time
 
 import log
-from mindwave_interface import connect_to_eeg_server, clean_raw_data, eeg_data
+from mindwave_interface import connect_to_eeg_server, eeg_data
 from monitor_db import connect_to_eeg_db
 from monitor_plot import plot_raw_eeg_data
 
-# TODO remove logic from main()
 TIMESTAMP_FORMAT = '%Y-%m-%d %H:%M:%S'
 
 
@@ -34,26 +32,17 @@ def create_session(collection, session_id: str=None, description: str=''):
     return session_id
 
 
-def main(args):
-    """Simple monitoring app.
-    :param args: command line parameters.
-    :type args: [str]
+def capture_data(eeg, sock, logger, record_raw: bool=False, session_key: str=None):
+    """Main loop for data capturing.
+
+    :param eeg: collection for persistence.
+    :param sock: socket for communication with MindWave.
+    :param record_raw: capture raw data?
+    :param session_key: optional session key.
+    :param logger: the logger.
+    :return: raw, resp. delta data and time data
+    :rtype: ([float], [long])
     """
-    # TODO improve argument handling.
-    if len(args) > 1:
-        session_id = args[1]
-    else:
-        session_id = None
-    if len(args) > 2:
-        record_raw = True
-    else:
-        record_raw = False
-    log.initialize_logger()
-    logger = logging.getLogger('mindwave')
-    logger.info("Application started.")
-    sock = connect_to_eeg_server(enable_raw_output=record_raw)
-    con, db, session, eeg = connect_to_eeg_db()
-    session_key = create_session(session, session_id)
     eeg_data_set = []
     time_data = []
     base_time = None
@@ -81,6 +70,29 @@ def main(args):
             break
         except Exception as exc:
             logger.error("Exception occurred: {}".format(repr(exc)))
+    return eeg_data_set, time_data
+
+
+def main(args):
+    """Simple monitoring app.
+    :param args: command line parameters.
+    :type args: [str]
+    """
+    if len(args) > 1:
+        session_id = args[1]
+    else:
+        session_id = None
+    if len(args) > 2:
+        record_raw = True
+    else:
+        record_raw = False
+    log.initialize_logger()
+    logger = logging.getLogger('mindwave')
+    logger.info("Application started.")
+    sock = connect_to_eeg_server(enable_raw_output=record_raw)
+    con, _, session, eeg = connect_to_eeg_db()
+    session_key = create_session(session, session_id)
+    eeg_data_set, time_data = capture_data(eeg, sock, logger, record_raw, session_key)
     logger.info("Application shutting down ...")
     con.close()
     sock.close()

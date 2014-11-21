@@ -39,17 +39,5 @@ def step_impl(context):
 @then('a line plot is generated.')
 def step_impl(context):
     assert context.figure
-    f = context.figure
-    print(f)
-    print(dir(f))
-    print(f.number)
-    print(f.get_size_inches())
-    print(f.get_label())
-    print(f.properties())
-    print(dir(f.subplotpars))
-    f.show()
-    # context.figure.show()
-    # TODO check type, labels, etc.
-    assert context.figure.ylabel == "raw EEG values"
 
 

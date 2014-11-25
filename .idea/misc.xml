@@ -20,5 +20,7 @@
   <component name="SvnBranchConfigurationManager">
     <option name="mySupportsUserInfoFilter" value="true" />
   </component>
+  <component name="TaskProjectConfiguration">
+    <server type="YouTrack" url="http://stbraun.myjetbrains.com/youtrack" />
+  </component>
 </project>
-

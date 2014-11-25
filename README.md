@@ -1,5 +1,7 @@
 # README #
 
+* Version: 0.0.1dev
+
 This README would normally document whatever steps are necessary to get this application up and running. Unfortunately the application doesn't exist yet ;-)
 
 ### What is this repository for? ###
@@ -8,7 +10,13 @@ This README would normally document whatever steps are necessary to get this app
 
 Module to access NeuroSKY Mindwave devices from Python code.
 
-* Version: 0.0.1dev
+MindWave is a device allowing to capture raw and also pre-processed EEG data. It is quite limited because there is only one sensor, but it's fine for some experiments.
+
+The device connects via Bluetooth to the computer. There is a low-level COM and a nice socket based protocol.
+Data can be read as Json string and therefore easily processed using Python.
+
+Currently MongoDB is used for persisitence. A simple graph of the captured data based on matplotlib is provided.
+
 
 ### How do I get set up? ###
 
@@ -29,9 +37,8 @@ Module to access NeuroSKY Mindwave devices from Python code.
 * Code review
 * Other guidelines
 
-### Who do I talk to? ###
+### Copyright & License ###
 
-* Stefan Braun
+  * Copyright 2014, Stefan Braun
+  * License: MIT
 
-* Copyright Stefan Braun
-* Provided under MIT license.

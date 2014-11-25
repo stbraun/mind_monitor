@@ -2,9 +2,7 @@
 
 * Version: 0.0.1dev
 
-This README would normally document whatever steps are necessary to get this application up and running. Unfortunately the application doesn't exist yet ;-)
-
-### What is this repository for? ###
+This README would normally document whatever steps are necessary to get this application up and running. Currently the app is under development.
 
 ### Quick summary
 
@@ -15,7 +13,7 @@ MindWave is a device allowing to capture raw and also pre-processed EEG data. It
 The device connects via Bluetooth to the computer. There is a low-level COM and a nice socket based protocol.
 Data can be read as Json string and therefore easily processed using Python.
 
-Currently MongoDB is used for persisitence. A simple graph of the captured data based on matplotlib is provided.
+Currently *MongoDB* is used for persistence. A simple graph of the captured data based on *matplotlib* is provided.
 
 
 ### How do I get set up? ###

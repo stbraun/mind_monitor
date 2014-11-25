@@ -32,5 +32,6 @@ Module to access NeuroSKY Mindwave devices from Python code.
 ### Who do I talk to? ###
 
 * Stefan Braun
-Copyright Stefan Braun
-Provided under MIT license.
+
+* Copyright Stefan Braun
+* Provided under MIT license.

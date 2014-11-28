@@ -63,14 +63,14 @@ def eeg_data(sock_):
     while True:
         buf = sock_.recv(BUFFER_SIZE)
         raw = str(buf, encoding='iso-8859-1').strip()
-        jres = json.loads(raw, encoding="utf-8")
-        if POOR_SIGNAL_LEVEL in jres and jres[POOR_SIGNAL_LEVEL] >= MAX_QUALITY_LEVEL:
+        data = json.loads(raw, encoding="utf-8")
+        if POOR_SIGNAL_LEVEL in data and data[POOR_SIGNAL_LEVEL] >= MAX_QUALITY_LEVEL:
             # ignore bad data
-            logger.warning("Bad signal quality: {}".format(repr(jres[POOR_SIGNAL_LEVEL])))
+            logger.warning("Bad signal quality: {}".format(repr(data[POOR_SIGNAL_LEVEL])))
             continue
-        jres['time'] = time.time()
-        logger.info(' yielding {}'.format(jres))
-        yield jres
+        data['time'] = time.time()
+        logger.info(' yielding {}'.format(data))
+        yield data
 
 
 if __name__ == '__main__':

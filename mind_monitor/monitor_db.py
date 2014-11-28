@@ -6,12 +6,12 @@ __author__ = 'sb'
 
 # TODO
 # A couple of assumptions were made:
-#  * local mongo server
+#  * local MongoDB server
 #  * database name
 #  * collection name
 #
 # *At least* document these assumptions.
-# *Better:* make them explicit and overridable.
+# *Better:* make them explicit and customizable.
 
 logger = logging.getLogger('mind_monitor.db')
 

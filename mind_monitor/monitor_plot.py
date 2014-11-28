@@ -18,9 +18,6 @@ def plot_data(time_data, eeg_data, xlabel='Time [secs]', ylabel='Values', title=
     fig = plt.figure(num='EEG Plot', figsize=(18, 6))
     spl = fig.add_subplot(111, xlabel=xlabel, ylabel=ylabel, title=title)
     spl.plot(time_data, eeg_data, 'g-')
-    #spl.xlabel("time [secs]")
-    #spl.ylabel("raw EEG values")
-    #spl.title("Title: EEG Data")
     return fig
 
 

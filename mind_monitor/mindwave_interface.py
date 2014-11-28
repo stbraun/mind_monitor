@@ -1,11 +1,8 @@
 """Interface to the Mindwave EEG ThinkGear Connector."""
 
-# TODO add license
 import time
 
 __author__ = 'sb'
-
-# TODO consider context manager to handle clean-up.
 
 import json
 import socket

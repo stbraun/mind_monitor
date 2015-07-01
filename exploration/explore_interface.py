@@ -102,7 +102,7 @@ def clear_eeg_db():
 def main(argv):
     logger.info("Application started.")
     sock = connect_to_eeg_server(enable_raw_output=True)
-    con, db, eeg = connect_to_eeg_db()
+    con, db, session, eeg = connect_to_eeg_db()
     raw_eeg_data = []
     time_data = []
     base_time = None

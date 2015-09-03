@@ -14,7 +14,7 @@ BUFFER_SIZE = 1024
 MAX_QUALITY_LEVEL = 200
 POOR_SIGNAL_LEVEL = 'poorSignalLevel'
 
-logger = logging.getLogger('mind_monitor.interface')
+logger = logging.getLogger('mindwave.interface')
 
 
 def connect_to_eeg_server(enable_raw_output: bool=False, url: str=URL, port: int=PORT):
@@ -53,7 +53,8 @@ def clean_raw_data(buf):
 
 
 def eeg_data(sock_):
-    """Retrieve eeg data provide it a record per call.
+    """Retrieve eeg data and provide it a record per call.
+
     :param sock_: connection to ThinkGear Connector.
     :type sock_: socket.socket.
     """

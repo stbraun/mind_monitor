@@ -1,6 +1,5 @@
 """Monitoring EEG."""
 
-# TODO add licencse
 import logging
 import sys
 import time
@@ -97,8 +96,21 @@ def main(args):
     con.close()
     sock.close()
     logger.info("Shutdown finished.")
-    plot_raw_eeg_data(time_data, eeg_data_set)
+    data_in_microvolts = raw_to_micro_volts(eeg_data_set)
+    plot_raw_eeg_data(time_data, data_in_microvolts)
     return 0
+
+
+def raw_to_micro_volts(raw_data_set):
+    """Convert a list of raw values to micro volts.
+
+    :param raw_data_set: list of raw values.
+    :type raw_data_set: [float]
+    :return list of values in micro volts.
+    :rtype: [float]
+    """
+    return [(x * 1.8 / 4096) / 2000 for x in raw_data_set]
+
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv))

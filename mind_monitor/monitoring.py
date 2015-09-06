@@ -64,7 +64,7 @@ def capture_data(eeg, sock, logger, record_raw: bool=False, session_key: str=Non
                             base_time = jres['time']
                         time_data.append(jres['time'] - base_time)
                 eeg.insert(jres)
-                logger.info(".")
+                logger.info(jres)
         except KeyboardInterrupt:
             break
         except Exception as exc:
@@ -86,7 +86,7 @@ def main(args):
     else:
         record_raw = False
     log.initialize_logger()
-    logger = logging.getLogger('mindwave')
+    logger = logging.getLogger('mind_monitor')
     logger.info("Application started.")
     sock = connect_to_eeg_server(enable_raw_output=record_raw)
     con, _, session, eeg = connect_to_eeg_db()

@@ -11,6 +11,6 @@ setup(
     author_email='sb@action.ms',
     description='Mindwave interface',
     requires=['matplotlib', 'PyYaml', 'behave', 'pymongo'],
-    package_data={'resources': ['log_config.yaml',],}
+    package_data=dict(resources=['log_config.yaml', ])
     # entry_points={'console_scripts': ['monitor=monitor:main']}
 )

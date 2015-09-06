@@ -22,9 +22,10 @@ Currently *MongoDB* is used for persistence. A simple graph of the captured data
 
 There is no regular setup yet, just a view hints.
 
-#### Configuration ####
+#### MindWave Configuration ####
 
 The device needs to be installed. *ThinkGearConnector* is used for communication, so it must be started before running mind monitor.
+See the constants at top of mindwave_interface for configuration.
 
 #### Dependencies ####
   * Python 3.4
@@ -32,6 +33,7 @@ The device needs to be installed. *ThinkGearConnector* is used for communication
   * pymongo
   * Sphinx (for doc generation only)
   * nose (for tests only)
+  * behave (for tests only)
   * MongoDB
   
 #### Database configuration ####
@@ -41,7 +43,7 @@ See ```monitor_db.py```.
 
 #### How to run tests ####
 
-There are tests written for *behave* and others using *pyunit* and may be run with *nose*. 
+There are tests written for *behave* and others using *pyunit* that may be run with *nose*. 
 
 #### Deployment instructions ####
 
@@ -65,6 +67,6 @@ Obviously white box tests may break during refactoring. Therefore the use of bla
 
 ### Copyright & License ###
 
-  * Copyright 2014, Stefan Braun
+  * Copyright 2014, 2015, Stefan Braun
   * License: MIT
 

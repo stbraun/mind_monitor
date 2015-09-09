@@ -5,7 +5,7 @@ setup(
     version='0.1.0.dev1',
     packages=['mind_monitor'],
     # package_dir={'': 'mind_monitor'},
-    url='https://bitbucket.org/sb_/pymindmonitor',
+    url='https://github.com/stbraun/mind_monitor/tree/master',
     license='MIT',
     author='Stefan Braun',
     author_email='sb@action.ms',

@@ -3,7 +3,7 @@
 Get some data to get a feel for it and see some results.
 """
 from mindwave_interface import connect_to_eeg_server, clean_raw_data
-from monitor_db import connect_to_eeg_db
+from monitor_mongo import connect_to_eeg_db
 from monitor_plot import plot_raw_eeg_data
 
 __author__ = 'sb'

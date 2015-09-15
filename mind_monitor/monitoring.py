@@ -6,7 +6,7 @@ import time
 
 import log
 from mindwave_interface import connect_to_eeg_server, eeg_data
-from monitor_db import connect_to_eeg_db
+from monitor_mongo import connect_to_eeg_db
 from monitor_plot import plot_raw_eeg_data
 
 TIMESTAMP_FORMAT = '%Y-%m-%d %H:%M:%S'

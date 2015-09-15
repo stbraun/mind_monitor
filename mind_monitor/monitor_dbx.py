@@ -30,6 +30,7 @@ class MonitorDB(object):
         """Initialize persistence mechanism.
         :param logger: the logger.
         """
+        super().__init__()
         self.logger = logger
         self.logger.info("Initializing MonitorDB")
         self.new_session()

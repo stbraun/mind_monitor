@@ -39,13 +39,13 @@ class MongoDB(MonitorDB):
         :return: connection, database, c_session and c_eeg.
         :rtype: (MongoClient, Database, Collection, Collection)
         """
-        logger.info("Connecting to MongoDB ...")
+        self.logger.info("Connecting to MongoDB ...")
         self.con = MongoClient()
         self.db = self.con.eeg_db
         assert isinstance(self.db, Database)
         self.c_eeg = self.db.eeg
         self.c_session = self.db.session
-        logger.info("Connected and db opened.")
+        self.logger.info("Connected and db opened.")
         assert isinstance(self.c_session, Collection)
         assert isinstance(self.c_eeg, Collection)
 

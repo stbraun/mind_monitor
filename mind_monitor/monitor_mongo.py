@@ -16,6 +16,7 @@ __author__ = 'sb'
 # *At least* document these assumptions.
 # *Better:* make them explicit and customizable.
 
+# TODO use centralized format for timestamps
 TIMESTAMP_FORMAT = '%Y-%m-%d %H:%M:%S'
 
 
@@ -49,12 +50,11 @@ class MongoDB(MonitorDB):
         assert isinstance(self.c_session, Collection)
         assert isinstance(self.c_eeg, Collection)
 
-    def new_session(self, session_id=''):
+    def new_session(self, description=''):
         """Start a new session.
-        If no session_id is given a timestamp is used.
 
-        :param session_id: the identifier of this session.
-        :type session_id: str
+        :param description: optional description of this session
+        :type description: str
         """
         super().new_session(session_id)
         time_stamp = time.strftime(TIMESTAMP_FORMAT)

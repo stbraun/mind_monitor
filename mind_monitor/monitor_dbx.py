@@ -35,24 +35,21 @@ class MonitorDB(object):
         self.logger.info("Initializing MonitorDB")
         self.session_id = None
         self.description = ''
-        self.new_session()
         pass
 
-    def new_session(self, session_id='', description=''):
+    def new_session(self, description=''):
         """Start a new session.
-        If no session_id is given a timestamp is used.
 
-        :param session_id: optional identifier of this session.
-        :type session_id: str
         :param description: optional description of this session
         :type description: str
         """
-        if session_id == '':
-            self.session_id = time.strftime(TIMESTAMP_FORMAT)
-        else:
-            self.session_id = session_id
+        self.session_id = time.strftime(TIMESTAMP_FORMAT)
         self.logger.info("Creating session: {}".format(self.session_id))
         self.description = description
+
+    def close(self):
+        """Close db."""
+        pass
 
     def add_comment_to_session(self, comment, session_id=''):
         """Add comment to a session.
@@ -60,14 +57,9 @@ class MonitorDB(object):
 
         :param comment: comment to add
         :type comment: str
-        :param session_id: a session id.
+        :param session_id: optional session id.
         :type session_id: str
         """
-        if session_id == '':
-            session = self.session_id
-        else:
-            session = session_id
-        self.logger.info("Adding comment to session {} - {}.".format(session, comment))
         pass
 
     def add_record(self, record):

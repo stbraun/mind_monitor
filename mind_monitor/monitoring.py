@@ -6,12 +6,12 @@ import time
 
 import log
 from mindwave_interface import connect_to_eeg_server, eeg_data
-from monitor_mongo import MongoDB
 from monitor_plot import plot_raw_eeg_data
+from monitor_sqlite import SQLiteDB
 
 TIMESTAMP_FORMAT = '%Y-%m-%d %H:%M:%S'
 
-db = None
+database = None
 
 
 def create_session(session_id: str=None, description: str=''):
@@ -41,6 +41,7 @@ def capture_data(sock, logger, record_raw=False):
     :return: raw, resp. delta data and time data
     :rtype: ([float], [long])
     """
+    global database
     eeg_data_set = []
     time_data = []
     base_time = None
@@ -61,7 +62,7 @@ def capture_data(sock, logger, record_raw=False):
                         if not base_time:
                             base_time = jres['time']
                         time_data.append(jres['time'] - base_time)
-                db.add_record(jres)
+                database.add_record(jres)
                 logger.info(jres)
         except KeyboardInterrupt:
             break
@@ -75,11 +76,8 @@ def main(args):
     :param args: command line parameters.
     :type args: [str]
     """
+    global database
     if len(args) > 1:
-        session_id = args[1]
-    else:
-        session_id = None
-    if len(args) > 2:
         record_raw = True
     else:
         record_raw = False
@@ -87,13 +85,11 @@ def main(args):
     logger = logging.getLogger('mind_monitor')
     logger.info("Application started.")
     sock = connect_to_eeg_server(enable_raw_output=record_raw)
-    db = MongoDB(logger)
-    # con, _, session, eeg = connect_to_eeg_db()
-    db.new_session()
-    # session_key = create_session(session, session_id)
+    database = SQLiteDB(logger)
+    database.new_session()
     eeg_data_set, time_data = capture_data(sock, logger, record_raw)
     logger.info("Application shutting down ...")
-    # con.close()
+    database.close()
     sock.close()
     logger.info("Shutdown finished.")
     data_in_microvolts = raw_to_micro_volts(eeg_data_set)

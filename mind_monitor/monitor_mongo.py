@@ -2,6 +2,7 @@
 from pymongo import MongoClient
 from pymongo.database import Database, Collection
 import logging
+import time
 from monitor_dbx import MonitorDB
 
 __author__ = 'sb'
@@ -15,27 +16,7 @@ __author__ = 'sb'
 # *At least* document these assumptions.
 # *Better:* make them explicit and customizable.
 
-logger = logging.getLogger('mind_monitor.db')
-
-
-def connect_to_eeg_db():
-    """Connect to database.
-
-    Connects to a local MongoDB server and opens 'eeg_db' database.
-    If the database does not exist yet, it will be created.
-    :return: connection, database, c_session and c_eeg.
-    :rtype: (MongoClient, Database, Collection, Collection)
-    """
-    logger.info("Connecting to MongoDB ...")
-    con = MongoClient()
-    db = con.eeg_db
-    assert isinstance(db, Database)
-    c_eeg = db.eeg
-    c_session = db.session
-    logger.info("Connected and db opened.")
-    assert isinstance(c_session, Collection)
-    assert isinstance(c_eeg, Collection)
-    return con, db, c_session, c_eeg
+TIMESTAMP_FORMAT = '%Y-%m-%d %H:%M:%S'
 
 
 class MongoDB(MonitorDB):
@@ -68,6 +49,18 @@ class MongoDB(MonitorDB):
         assert isinstance(self.c_session, Collection)
         assert isinstance(self.c_eeg, Collection)
 
+    def new_session(self, session_id=''):
+        """Start a new session.
+        If no session_id is given a timestamp is used.
+
+        :param session_id: the identifier of this session.
+        :type session_id: str
+        """
+        super().new_session(session_id)
+        time_stamp = time.strftime(TIMESTAMP_FORMAT)
+        session = {'key': self.session_id, 'description': self.description, 'timestamp': time_stamp}
+        self.c_session.insert_one(session)
+
     def add_comment_to_session(self, comment, session_id=''):
         """Add comment to a session.
         If no session_id is given add to current session.
@@ -84,4 +77,5 @@ class MongoDB(MonitorDB):
         :param record: the data record to store.
         """
         super().add_record(record)
+        record['session'] = self.session_id
         self.c_eeg.insert_one(record)

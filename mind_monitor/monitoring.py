@@ -6,38 +6,37 @@ import time
 
 import log
 from mindwave_interface import connect_to_eeg_server, eeg_data
-from monitor_mongo import connect_to_eeg_db
+from monitor_mongo import MongoDB
 from monitor_plot import plot_raw_eeg_data
 
 TIMESTAMP_FORMAT = '%Y-%m-%d %H:%M:%S'
 
+db = None
 
-def create_session(collection, session_id: str=None, description: str=''):
+
+def create_session(session_id: str=None, description: str=''):
     """Create a new session.
 
     If given, session_id will be the session session_id. Otherwise a timestamp will be used
     to identify the session.
-    :param collection: the collection to store the session record.
     :param session_id: (optional) session id.
     :param description: (optional) description of session.
-    :return: the session session_id
-    :rtype: str
+    :return: session
+    :rtype: {'key', 'description', 'timestamp'}
     """
     time_stamp = time.strftime(TIMESTAMP_FORMAT)
     if session_id is None:
         session_id = time_stamp
     session = {'key': session_id, 'description': description, 'timestamp': time_stamp}
-    collection.insert(session)
-    return session_id
+    return session
 
 
-def capture_data(eeg, sock, logger, record_raw: bool=False, session_key: str=None):
+def capture_data(sock, logger, record_raw=False):
     """Main loop for data capturing.
 
-    :param eeg: collection for persistence.
     :param sock: socket for communication with MindWave.
     :param record_raw: capture raw data?
-    :param session_key: optional session key.
+    :type record_raw: bool
     :param logger: the logger.
     :return: raw, resp. delta data and time data
     :rtype: ([float], [long])
@@ -48,7 +47,6 @@ def capture_data(eeg, sock, logger, record_raw: bool=False, session_key: str=Non
     while True:
         try:
             for jres in eeg_data(sock):
-                jres['session'] = session_key
                 if record_raw:
                     try:
                         eeg_data_set.append(jres['rawEeg'])
@@ -63,7 +61,7 @@ def capture_data(eeg, sock, logger, record_raw: bool=False, session_key: str=Non
                         if not base_time:
                             base_time = jres['time']
                         time_data.append(jres['time'] - base_time)
-                eeg.insert(jres)
+                db.add_record(jres)
                 logger.info(jres)
         except KeyboardInterrupt:
             break
@@ -89,11 +87,13 @@ def main(args):
     logger = logging.getLogger('mind_monitor')
     logger.info("Application started.")
     sock = connect_to_eeg_server(enable_raw_output=record_raw)
-    con, _, session, eeg = connect_to_eeg_db()
-    session_key = create_session(session, session_id)
-    eeg_data_set, time_data = capture_data(eeg, sock, logger, record_raw, session_key)
+    db = MongoDB(logger)
+    # con, _, session, eeg = connect_to_eeg_db()
+    db.new_session()
+    # session_key = create_session(session, session_id)
+    eeg_data_set, time_data = capture_data(sock, logger, record_raw)
     logger.info("Application shutting down ...")
-    con.close()
+    # con.close()
     sock.close()
     logger.info("Shutdown finished.")
     data_in_microvolts = raw_to_micro_volts(eeg_data_set)

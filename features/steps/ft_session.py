@@ -16,7 +16,7 @@ def step_impl(context):
     """Actually just create a session."""
     with mock.patch.object(Collection, 'insert', return_value=None) as mock_collection:
         context.id = create_session(Collection(Database(MongoClient(), 'blub'), 'eeg'))
-    context.coll =  mock_collection.assert_called_once()
+    context.coll = mock_collection.assert_called_once()
 
 @then('all data points captured will be accessible as one set.')
 def step_impl(context):

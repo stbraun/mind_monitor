@@ -62,14 +62,20 @@ class SQLiteDB(MonitorDB):
         """
         super().new_session(description)
         time_stamp = time.strftime(TIMESTAMP_FORMAT)
+        self.session_id = self.next_session_id()
         cursor = self.conn.cursor()
-        cursor.execute("select max(id) from sessions")
-        max_id = cursor.fetchone()[0]
-        self.session_id = max_id + 1 if max_id is not None else 0
         self.logger.info("Creating session: {}".format(self.session_id))
         cursor.execute('''INSERT INTO sessions VALUES (?, ?, ?)''',
                        (self.session_id, time_stamp, description))
         self.conn.commit()
+
+    def next_session_id(self):
+        """Determine the next session id."""
+        cursor = self.conn.cursor()
+        cursor.execute("select max(id) from sessions")
+        max_id = cursor.fetchone()[0]
+        session_id = max_id + 1 if max_id is not None else 0
+        return session_id
 
     def close(self):
         """Close db."""

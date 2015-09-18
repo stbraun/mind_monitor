@@ -4,48 +4,68 @@ import logging
 import sys
 
 import log
-from mindwave_interface import connect_to_eeg_server, eeg_data
+from mindwave_interface import MindWaveInterface
 from monitor_plot import plot_raw_eeg_data
 from monitor_sqlite import SQLiteDB
 
 TIMESTAMP_FORMAT = '%Y-%m-%d %H:%M:%S'
 
-database = None
 
+class CaptureEEGData(object):
 
-def capture_data(sock, logger, capture_raw=False):
-    """Main loop for data capturing.
+    def __init__(self, record_raw=True):
+        """Simple monitoring app.
+        :param record_raw: optional - True to capture raw data.
+        :type record_raw: Bool
+        """
+        self.logger = logging.getLogger('mind_monitor')
+        self.record_raw = record_raw
+        self.logger.info("Application started.")
+        self.database = SQLiteDB()
+        self.mindwave_if = MindWaveInterface()
+        self.raw_data_set = []
+        self.eeg_data_set = []
+        self.time_data = []
 
-    :param sock: socket for communication with MindWave.
-    :param logger: the logger.
-    :return: raw, delta data, and time data
-    :rtype: ([float], [float], [long])
-    """
-    global database
-    eeg_data_set = []
-    raw_data_set = []
-    time_data = []
-    base_time = None
-    while True:
-        try:
-            for jres in eeg_data(sock):
-                if capture_raw and 'rawEeg' in jres:
-                    raw_data_set.append(jres['rawEeg'])
-                    if not base_time:
-                        base_time = jres['time']
-                    time_data.append(jres['time'] - base_time)
-                elif not capture_raw and 'eegPower' in jres:
-                    eeg_data_set.append(jres['eegPower']['delta'])
-                    if not base_time:
-                        base_time = jres['time']
-                    time_data.append(jres['time'] - base_time)
-                database.add_record(jres)
-                logger.info(jres)
-        except KeyboardInterrupt:
-            break
-        except Exception as exc:
-            logger.error("Exception occurred: {}".format(repr(exc)))
-    return raw_data_set, eeg_data_set, time_data
+    def close(self):
+        """Close connections."""
+        self.logger.info("Application shutting down ...")
+        self.database.close()
+        self.mindwave_if.close()
+        self.logger.info("Shutdown finished.")
+
+    def plot_raw_data(self):
+        """Plot captured raw data."""
+        plot_raw_eeg_data(self.time_data, self.raw_data_set)
+
+    def run(self):
+        """Start capturing."""
+        self.mindwave_if.connect_to_eeg_server(enable_raw_output=self.record_raw)
+        self.database.new_session()
+        self.capture_data()
+
+    def capture_data(self):
+        """Main loop for data capturing."""
+        base_time = None
+        while True:
+            try:
+                for jres in self.mindwave_if.eeg_data():
+                    if self.record_raw and 'rawEeg' in jres:
+                        self.raw_data_set.append(jres['rawEeg'])
+                        if not base_time:
+                            base_time = jres['time']
+                        self.time_data.append(jres['time'] - base_time)
+                    elif not self.record_raw and 'eegPower' in jres:
+                        self.eeg_data_set.append(jres['eegPower']['delta'])
+                        if not base_time:
+                            base_time = jres['time']
+                        self.time_data.append(jres['time'] - base_time)
+                    self.database.add_record(jres)
+                    self.logger.info(jres)
+            except KeyboardInterrupt:
+                break
+            except Exception as exc:
+                self.logger.error("Exception occurred: {}".format(repr(exc)))
 
 
 def main(args):
@@ -59,18 +79,12 @@ def main(args):
     else:
         record_raw = False
     log.initialize_logger()
-    logger = logging.getLogger('mind_monitor')
-    logger.info("Application started.")
-    sock = connect_to_eeg_server(enable_raw_output=record_raw)
-    database = SQLiteDB()
-    database.new_session()
-    raw_data_set, eeg_data_set, time_data = capture_data(sock, logger, capture_raw=record_raw)
-    logger.info("Application shutting down ...")
-    database.close()
-    sock.close()
-    logger.info("Shutdown finished.")
-    plot_raw_eeg_data(time_data, raw_data_set)
-    return 0
+    capture = CaptureEEGData(record_raw=record_raw)
+    capture.run()
+    capture.close()
+    capture.plot_raw_data()
+
+
 
 
 # def raw_to_micro_volts(raw_data_set):

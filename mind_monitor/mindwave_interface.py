@@ -14,67 +14,54 @@ BUFFER_SIZE = 1024
 MAX_QUALITY_LEVEL = 200
 POOR_SIGNAL_LEVEL = 'poorSignalLevel'
 
-logger = logging.getLogger('mind_monitor.interface')
 
+class MindWaveInterface(object):
+    """Interface to MindWave headset."""
+    def __init__(self):
+        self.logger = logging.getLogger('mind_monitor.interface')
+        self.sock_ = None
+        self.raw_data = False
+        self.bad_quality = False
 
-def connect_to_eeg_server(enable_raw_output: bool=False, url: str=URL, port: int=PORT):
-    """Connect to ThinkGear Connector.
+    def connect_to_eeg_server(self, enable_raw_output=False, url=URL, port=PORT):
+        """Connect to ThinkGear Connector.
 
-    :param enable_raw_output: select kind of data to request.
-    :param url: the ThinkGear Connector url
-    :param port: the ThinkGear Connector port
-    :return: socket
-    :rtype: socket.socket
-    """
-    logger.info("Connecting to ThinkGear Connector ...")
-    sock_ = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock_.connect((url, port))
-    req = {"enableRawOutput": enable_raw_output, "format": "Json"}
-    format_req = bytes(json.dumps(req), encoding='iso-8859-1')
-    logger.debug("Request: {}".format(repr(format_req)))
-    sock_.send(format_req)
-    logger.info("Connection to ThinkGear Connector established.")
-    return sock_
+        :param enable_raw_output: select kind of data to request.
+        :param url: the ThinkGear Connector url
+        :param port: the ThinkGear Connector port
+        """
+        self.logger.info("Connecting to ThinkGear Connector ...")
+        self.raw_data = enable_raw_output
+        self.sock_ = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.sock_.connect((url, port))
+        req = {"enableRawOutput": enable_raw_output, "format": "Json"}
+        format_req = bytes(json.dumps(req), encoding='iso-8859-1')
+        self.logger.debug("Request: {}".format(repr(format_req)))
+        self.sock_.send(format_req)
+        self.logger.info("Connection to ThinkGear Connector established.")
 
+    def eeg_data(self):
+        """Retrieve eeg data and provide it a record per call.
+        Yields one record per call.
+        """
+        while True:
+            buf = self.sock_.recv(BUFFER_SIZE)
+            raw = str(buf, encoding='iso-8859-1').strip()
+            for record in raw.splitlines():
+                data = json.loads(record, encoding="utf-8")
+                if POOR_SIGNAL_LEVEL in data and data[POOR_SIGNAL_LEVEL] >= MAX_QUALITY_LEVEL:
+                    # ignore bad data
+                    if not self.bad_quality:
+                        self.logger.warning("Bad signal quality: {}".format(repr(data[POOR_SIGNAL_LEVEL])))
+                        self.bad_quality = True
+                    continue
+                if self.bad_quality:
+                    self.bad_quality = False
+                    self.logger.warning("Signal quality recovered.")
+                data['time'] = time.time()
+                self.logger.info(' yielding {}'.format(data))
+                yield data
 
-def clean_raw_data(buf):
-    """Clean received data for processing.
-
-    Removes trailing whitespace and splits lines to get single records.
-
-    :param buf: data read from EEG server.
-    :type buf: bytes
-    :return: separate records as Json strings.
-    :rtype: list of str
-    """
-    raw = str(buf, encoding='iso-8859-1').strip()
-    records = raw.splitlines()
-    return records
-
-
-def eeg_data(sock_):
-    """Retrieve eeg data and provide it a record per call.
-
-    :param sock_: connection to ThinkGear Connector.
-    :type sock_: socket.socket.
-    """
-    while True:
-        buf = sock_.recv(BUFFER_SIZE)
-        raw = str(buf, encoding='iso-8859-1').strip()
-        for record in raw.splitlines():
-            data = json.loads(record, encoding="utf-8")
-            if POOR_SIGNAL_LEVEL in data and data[POOR_SIGNAL_LEVEL] >= MAX_QUALITY_LEVEL:
-                # ignore bad data
-                logger.warning("Bad signal quality: {}".format(repr(data[POOR_SIGNAL_LEVEL])))
-                continue
-            data['time'] = time.time()
-            logger.info(' yielding {}'.format(data))
-            yield data
-
-
-if __name__ == '__main__':
-    import log
-
-    log.initialize_logger()
-    sock = connect_to_eeg_server()
-    sock.close()
+    def close(self):
+        """Close connection."""
+        self.sock_.close()

@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='PyMindMonitor',
-    version='0.1.0.dev2',
+    version='0.1.0.dev3',
     packages=['mind_monitor'],
     # package_dir={'': 'mind_monitor'},
     url='https://github.com/stbraun/mind_monitor/tree/master',

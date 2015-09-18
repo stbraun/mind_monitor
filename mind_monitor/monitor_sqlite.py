@@ -36,21 +36,22 @@ class SQLiteDB(MonitorDB):
         """
         super().__init__()
         self.conn = sqlite3.connect(DATABASE)
-        self.setup_db()
+        self.setup_db() # TODO prevent call if DB already there
 
     def setup_db(self):
         """Setup database schema."""
         cursor = self.conn.cursor()
         # Create tables
         try:
-            cursor.execute('''CREATE TABLE sessions (id TEXT PRIMARY KEY, timestamp TEXT, description TEXT)''')
-            cursor.execute('''CREATE TABLE comments (session TEXT REFERENCES "sessions" ("id"), comment TEXT)''')
-            cursor.execute('''CREATE TABLE raw_data (session TEXT REFERENCES "sessions" ("id"), timestamp TEXT, data REAL)''')
-            cursor.execute('''CREATE TABLE records (session TEXT REFERENCES "sessions" ("id"), timestamp TEXT,
+            cursor.execute('''CREATE TABLE sessions (id INTEGER PRIMARY KEY AUTOINCREMENT, timestamp TEXT, description TEXT)''')
+            cursor.execute('''CREATE TABLE comments (session INTEGER REFERENCES "sessions" ("id"), comment TEXT)''')
+            cursor.execute('''CREATE TABLE raw_data (session INTEGER REFERENCES "sessions" ("id"), timestamp TEXT, data REAL)''')
+            cursor.execute('''CREATE TABLE records (session INTEGER REFERENCES "sessions" ("id"), timestamp TEXT,
                                 highAlpha INT, highBeta INT,  highGamma INT, delta INT, theta INT,
                                 lowAlpha INT, lowBeta INT, lowGamma INT,
                                 attention INT, meditation, poorSignalLevel INT)''')
-        except:
+        except Exception as e:
+            self.logger.warning(e)
             pass
 
     def new_session(self, description=''):
@@ -62,6 +63,10 @@ class SQLiteDB(MonitorDB):
         super().new_session(description)
         time_stamp = time.strftime(TIMESTAMP_FORMAT)
         cursor = self.conn.cursor()
+        cursor.execute("select max(id) from sessions")
+        max_id = cursor.fetchone()[0]
+        self.session_id = max_id + 1 if max_id is not None else 0
+        self.logger.info("Creating session: {}".format(self.session_id))
         cursor.execute('''INSERT INTO sessions VALUES (?, ?, ?)''',
                        (self.session_id, time_stamp, description))
         self.conn.commit()
@@ -70,7 +75,7 @@ class SQLiteDB(MonitorDB):
         """Close db."""
         self.conn.close()
 
-    def add_comment_to_session(self, comment, session_id=''):
+    def add_comment_to_session(self, comment, session_id=None):
         """Add comment to a session.
         If no session_id is given add to current session.
 
@@ -80,7 +85,7 @@ class SQLiteDB(MonitorDB):
         :type session_id: str
         """
         super().add_comment_to_session(comment, session_id)
-        if session_id == '':
+        if session_id is None:
             session = self.session_id
         else:
             session = session_id

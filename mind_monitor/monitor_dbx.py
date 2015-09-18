@@ -44,15 +44,13 @@ class MonitorDB(object):
         :param description: optional description of this session
         :type description: str
         """
-        self.session_id = time.strftime(TIMESTAMP_FORMAT)
-        self.logger.info("Creating session: {}".format(self.session_id))
         self.description = description
 
     def close(self):
         """Close db."""
         pass
 
-    def add_comment_to_session(self, comment, session_id=''):
+    def add_comment_to_session(self, comment, session_id=None):
         """Add comment to a session.
         If no session_id is given add to current session.
 

@@ -5,12 +5,12 @@ formatters:
 handlers:
   console:
     class: logging.StreamHandler
-    level: DEBUG
+    level: WARNING
     formatter: simple
     stream: ext://sys.stdout
 loggers:
   mind_monitor:
-    level: DEBUG
+    level: WARNING
     handlers: [console]
     propagate: no
 root:

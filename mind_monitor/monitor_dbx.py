@@ -19,6 +19,7 @@ Abstract class describing interface of persistence mechanism.
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+import logging
 import time
 
 TIMESTAMP_FORMAT = '%Y-%m-%d %H:%M:%S'
@@ -26,12 +27,12 @@ TIMESTAMP_FORMAT = '%Y-%m-%d %H:%M:%S'
 
 class MonitorDB(object):
     """Abstract persistence class."""
-    def __init__(self, logger):
+    def __init__(self):
         """Initialize persistence mechanism.
-        :param logger: the logger.
         """
         super().__init__()
-        self.logger = logger
+        self.logger = logging.getLogger('mind_monitor.db')
+
         self.logger.info("Initializing MonitorDB")
         self.session_id = None
         self.description = ''

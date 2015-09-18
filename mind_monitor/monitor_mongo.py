@@ -23,8 +23,8 @@ TIMESTAMP_FORMAT = '%Y-%m-%d %H:%M:%S'
 class MongoDB(MonitorDB):
     """MongoDB implementation."""
 
-    def __init__(self, logger):
-        super().__init__(logger)
+    def __init__(self):
+        super().__init__()
         self.con = None
         self.db = None
         self.c_session = None

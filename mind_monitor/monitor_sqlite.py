@@ -23,7 +23,7 @@ import sqlite3
 import time
 from monitor_dbx import MonitorDB
 
-DATABASE = '/Users/sb/.eeg.db'
+DATABASE = './resources/eeg.db'
 # TODO use centralized format for timestamps
 TIMESTAMP_FORMAT = '%Y-%m-%d %H:%M:%S'
 
@@ -31,11 +31,10 @@ TIMESTAMP_FORMAT = '%Y-%m-%d %H:%M:%S'
 class SQLiteDB(MonitorDB):
     """SQLite implementation of MonitorDB API."""
 
-    def __init__(self, logger):
+    def __init__(self):
         """Initialize persistence mechanism.
-        :param logger: the logger.
         """
-        super().__init__(logger)
+        super().__init__()
         self.conn = sqlite3.connect(DATABASE)
         self.setup_db()
 
@@ -44,10 +43,10 @@ class SQLiteDB(MonitorDB):
         cursor = self.conn.cursor()
         # Create tables
         try:
-            cursor.execute('''CREATE TABLE sessions (id TEXT, timestamp TEXT, description TEXT)''')
-            cursor.execute('''CREATE TABLE comments (session TEXT, comment TEXT)''')
-            cursor.execute('''CREATE TABLE raw_data (session TEXT, timestamp TEXT, data REAL)''')
-            cursor.execute('''CREATE TABLE records (session TEXT, timestamp TEXT,
+            cursor.execute('''CREATE TABLE sessions (id TEXT PRIMARY KEY, timestamp TEXT, description TEXT)''')
+            cursor.execute('''CREATE TABLE comments (session TEXT REFERENCES "sessions" ("id"), comment TEXT)''')
+            cursor.execute('''CREATE TABLE raw_data (session TEXT REFERENCES "sessions" ("id"), timestamp TEXT, data REAL)''')
+            cursor.execute('''CREATE TABLE records (session TEXT REFERENCES "sessions" ("id"), timestamp TEXT,
                                 highAlpha INT, highBeta INT,  highGamma INT, delta INT, theta INT,
                                 lowAlpha INT, lowBeta INT, lowGamma INT,
                                 attention INT, meditation, poorSignalLevel INT)''')

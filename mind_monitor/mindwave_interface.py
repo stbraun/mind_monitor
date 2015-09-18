@@ -14,7 +14,7 @@ BUFFER_SIZE = 1024
 MAX_QUALITY_LEVEL = 200
 POOR_SIGNAL_LEVEL = 'poorSignalLevel'
 
-logger = logging.getLogger('mindwave.interface')
+logger = logging.getLogger('mind_monitor.interface')
 
 
 def connect_to_eeg_server(enable_raw_output: bool=False, url: str=URL, port: int=PORT):
@@ -61,14 +61,15 @@ def eeg_data(sock_):
     while True:
         buf = sock_.recv(BUFFER_SIZE)
         raw = str(buf, encoding='iso-8859-1').strip()
-        data = json.loads(raw, encoding="utf-8")
-        if POOR_SIGNAL_LEVEL in data and data[POOR_SIGNAL_LEVEL] >= MAX_QUALITY_LEVEL:
-            # ignore bad data
-            logger.warning("Bad signal quality: {}".format(repr(data[POOR_SIGNAL_LEVEL])))
-            continue
-        data['time'] = time.time()
-        logger.info(' yielding {}'.format(data))
-        yield data
+        for record in raw.splitlines():
+            data = json.loads(record, encoding="utf-8")
+            if POOR_SIGNAL_LEVEL in data and data[POOR_SIGNAL_LEVEL] >= MAX_QUALITY_LEVEL:
+                # ignore bad data
+                logger.warning("Bad signal quality: {}".format(repr(data[POOR_SIGNAL_LEVEL])))
+                continue
+            data['time'] = time.time()
+            logger.info(' yielding {}'.format(data))
+            yield data
 
 
 if __name__ == '__main__':

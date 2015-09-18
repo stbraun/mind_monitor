@@ -61,7 +61,7 @@ class CaptureEEGData(object):
                             base_time = jres['time']
                         self.time_data.append(jres['time'] - base_time)
                     self.database.add_record(jres)
-                    self.logger.info(jres)
+                    self.logger.debug(jres)
             except KeyboardInterrupt:
                 break
             except Exception as exc:

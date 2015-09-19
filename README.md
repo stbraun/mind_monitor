@@ -13,7 +13,7 @@ MindWave is a device allowing to capture raw and also pre-processed EEG data. It
 The device connects via Bluetooth to the computer. There is a low-level COM and a nice socket based protocol.
 Data can be read as Json string and therefore easily processed using Python.
 
-Currently *MongoDB* is used for persistence. A simple graph of the captured data based on *matplotlib* is provided.
+Currently *SQLite* is used for persistence. A graphs of the captured data based on *matplotlib* are provided.
 
 
 ### How do I get set up? ###
@@ -25,21 +25,20 @@ There is no regular setup yet, just a view hints.
 #### MindWave Configuration ####
 
 The device needs to be installed. *ThinkGearConnector* is used for communication, so it must be started before running mind monitor.
-See the constants at top of mindwave_interface for configuration.
+See the constants at top of ```mindwave_interface``` for configuration.
 
 #### Dependencies ####
   * Python 3.4
   * matplotlib
-  * pymongo
   * Sphinx (for doc generation only)
   * nose (for tests only)
   * behave (for tests only)
-  * MongoDB
+  * sqlite3
   
 #### Database configuration ####
 
-The database instance must be provided. Collections will be created on demand.
-See ```monitor_db.py```.
+The database will be created on demand.
+See ```monitor_sqlite.py```.
 
 #### How to run tests ####
 

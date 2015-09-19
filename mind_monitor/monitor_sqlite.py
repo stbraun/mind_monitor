@@ -21,11 +21,10 @@ SQLite implementation.
 
 import sqlite3
 import time
+from monitor_common import TIMESTAMP_FORMAT
 from monitor_dbx import MonitorDB
 
 DATABASE = './resources/eeg.db'
-# TODO use centralized format for timestamps
-TIMESTAMP_FORMAT = '%Y-%m-%d %H:%M:%S'
 
 
 class SQLiteDB(MonitorDB):
@@ -137,7 +136,6 @@ class SQLiteDB(MonitorDB):
         """
         super().retrieve_session_comments(session_id)
         raise NotImplementedError
-        return []
 
     def retrieve_raw_data(self, session_id):
         """Retrieve all raw data records of the session.
@@ -149,8 +147,8 @@ class SQLiteDB(MonitorDB):
         stmt = 'SELECT * FROM raw_data WHERE "session"=?'
         cursor = self.conn.cursor()
         cursor.execute(stmt, (session_id,))
-
-        return []
+        raw = cursor.fetchall()
+        return raw
 
     def retrieve_data(self, session_id):
         """Retrieve all data records of the session.
@@ -159,5 +157,8 @@ class SQLiteDB(MonitorDB):
         :rtype: [{}]
         """
         super().retrieve_data(session_id)
-
-        return []
+        cursor = self.conn.cursor()
+        stmt = 'select * from records where session=? order by timestamp'
+        cursor.execute(stmt, (session_id,))
+        records = cursor.fetchall()
+        return records

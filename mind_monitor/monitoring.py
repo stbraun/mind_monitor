@@ -12,6 +12,7 @@ TIMESTAMP_FORMAT = '%Y-%m-%d %H:%M:%S'
 
 
 class CaptureEEGData(object):
+    """Simple class to work with MindWave."""
 
     def __init__(self, record_raw=True):
         """Simple monitoring app.
@@ -49,19 +50,19 @@ class CaptureEEGData(object):
         base_time = None
         while True:
             try:
-                for jres in self.mindwave_if.eeg_data():
-                    if self.record_raw and 'rawEeg' in jres:
-                        self.raw_data_set.append(jres['rawEeg'])
+                for json_data in self.mindwave_if.eeg_data():
+                    if self.record_raw and 'rawEeg' in json_data:
+                        self.raw_data_set.append(json_data['rawEeg'])
                         if not base_time:
-                            base_time = jres['time']
-                        self.time_data.append(jres['time'] - base_time)
-                    elif not self.record_raw and 'eegPower' in jres:
-                        self.eeg_data_set.append(jres['eegPower']['delta'])
+                            base_time = json_data['time']
+                        self.time_data.append(json_data['time'] - base_time)
+                    elif not self.record_raw and 'eegPower' in json_data:
+                        self.eeg_data_set.append(json_data['eegPower']['delta'])
                         if not base_time:
-                            base_time = jres['time']
-                        self.time_data.append(jres['time'] - base_time)
-                    self.database.add_record(jres)
-                    self.logger.debug(jres)
+                            base_time = json_data['time']
+                        self.time_data.append(json_data['time'] - base_time)
+                    self.database.add_record(json_data)
+                    self.logger.debug(json_data)
             except KeyboardInterrupt:
                 break
             except Exception as exc:
@@ -73,7 +74,6 @@ def main(args):
     :param args: command line parameters.
     :type args: [str]
     """
-    global database
     if len(args) > 1:
         record_raw = True
     else:
@@ -83,8 +83,6 @@ def main(args):
     capture.run()
     capture.close()
     capture.plot_raw_data()
-
-
 
 
 # def raw_to_micro_volts(raw_data_set):

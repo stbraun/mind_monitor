@@ -1,5 +1,4 @@
 """Plot monitor data."""
-__author__ = 'sb'
 
 import matplotlib.pyplot as plt
 

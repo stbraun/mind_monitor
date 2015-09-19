@@ -1,9 +1,6 @@
 """Interface to the Mindwave EEG ThinkGear Connector."""
 
 import time
-
-__author__ = 'sb'
-
 import json
 import socket
 import logging
@@ -17,6 +14,7 @@ POOR_SIGNAL_LEVEL = 'poorSignalLevel'
 
 class MindWaveInterface(object):
     """Interface to MindWave headset."""
+
     def __init__(self):
         self.logger = logging.getLogger('mind_monitor.interface')
         self.sock_ = None
@@ -52,7 +50,8 @@ class MindWaveInterface(object):
                 if POOR_SIGNAL_LEVEL in data and data[POOR_SIGNAL_LEVEL] >= MAX_QUALITY_LEVEL:
                     # ignore bad data
                     if not self.bad_quality:
-                        self.logger.warning("Bad signal quality: {}".format(repr(data[POOR_SIGNAL_LEVEL])))
+                        self.logger.warning(
+                            "Bad signal quality: {}".format(repr(data[POOR_SIGNAL_LEVEL])))
                         self.bad_quality = True
                     continue
                 if self.bad_quality:

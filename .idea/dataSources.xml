@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" hash="3268219629">
+    <data-source source="LOCAL" name="SQLite - EEG" uuid="fe7e5198-5744-4e23-849c-fb7b8b1150c2">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/mind_monitor/resources/eeg.db</jdbc-url>
+      <libraries />
+    </data-source>
+  </component>
+</project>

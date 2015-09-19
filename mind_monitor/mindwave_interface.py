@@ -7,7 +7,7 @@ import logging
 
 PORT = 13854
 URL = '127.0.0.1'
-BUFFER_SIZE = 1024
+BUFFER_SIZE = 4096
 MAX_QUALITY_LEVEL = 200
 POOR_SIGNAL_LEVEL = 'poorSignalLevel'
 
@@ -45,7 +45,7 @@ class MindWaveInterface(object):
         while True:
             buf = self.sock_.recv(BUFFER_SIZE)
             raw = str(buf, encoding='iso-8859-1').strip()
-            for record in raw.splitlines():
+            for record in raw.splitlines(): # TODO prevent data loss!
                 data = json.loads(record, encoding="utf-8")
                 if POOR_SIGNAL_LEVEL in data and data[POOR_SIGNAL_LEVEL] >= MAX_QUALITY_LEVEL:
                     # ignore bad data

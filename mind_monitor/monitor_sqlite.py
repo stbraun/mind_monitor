@@ -36,20 +36,28 @@ class SQLiteDB(MonitorDB):
         """
         super().__init__()
         self.conn = sqlite3.connect(DATABASE)
-        self.setup_db() # TODO prevent call if DB already there
+        self.setup_db()  # TODO prevent call if DB already there
 
     def setup_db(self):
         """Setup database schema."""
         cursor = self.conn.cursor()
         # Create tables
         try:
-            cursor.execute('''CREATE TABLE sessions (id INTEGER PRIMARY KEY AUTOINCREMENT, timestamp TEXT, description TEXT)''')
-            cursor.execute('''CREATE TABLE comments (session INTEGER REFERENCES "sessions" ("id"), comment TEXT)''')
-            cursor.execute('''CREATE TABLE raw_data (session INTEGER REFERENCES "sessions" ("id"), timestamp TEXT, data REAL)''')
-            cursor.execute('''CREATE TABLE records (session INTEGER REFERENCES "sessions" ("id"), timestamp TEXT,
+            cursor.execute('''CREATE TABLE sessions ( id INTEGER PRIMARY KEY AUTOINCREMENT,
+                              timestamp TEXT,
+                              description TEXT)''')
+            cursor.execute('''CREATE TABLE comments (
+                              session INTEGER REFERENCES "sessions" ("id"),
+                              comment TEXT)''')
+            cursor.execute('''CREATE TABLE raw_data (
+                              session INTEGER REFERENCES "sessions" ("id"),
+                              timestamp REAL,
+                              data REAL)''')
+            cursor.execute('''CREATE TABLE records (
+                                session INTEGER REFERENCES "sessions" ("id"), timestamp REAL,
                                 highAlpha INT, highBeta INT,  highGamma INT, delta INT, theta INT,
                                 lowAlpha INT, lowBeta INT, lowGamma INT,
-                                attention INT, meditation, poorSignalLevel INT)''')
+                                attention INT, meditation INT, poorSignalLevel INT)''')
         except Exception as e:
             self.logger.warning(e)
             pass
@@ -72,7 +80,7 @@ class SQLiteDB(MonitorDB):
     def next_session_id(self):
         """Determine the next session id."""
         cursor = self.conn.cursor()
-        cursor.execute("select max(id) from sessions")
+        cursor.execute("SELECT max(id) FROM sessions")  # TODO use sequence
         max_id = cursor.fetchone()[0]
         session_id = max_id + 1 if max_id is not None else 0
         return session_id
@@ -131,12 +139,25 @@ class SQLiteDB(MonitorDB):
         raise NotImplementedError
         return []
 
-    def retrieve_data(self, session_id):
-        """Retrieve all records of the session.
+    def retrieve_raw_data(self, session_id):
+        """Retrieve all raw data records of the session.
         :param session_id: the id of the session
         :return: data records.
         :rtype: [{}]
         """
         super().retrieve_data(session_id)
-        raise NotImplementedError
+        stmt = 'SELECT * FROM raw_data WHERE "session"=?'
+        cursor = self.conn.cursor()
+        cursor.execute(stmt, (session_id,))
+
+        return []
+
+    def retrieve_data(self, session_id):
+        """Retrieve all data records of the session.
+        :param session_id: the id of the session
+        :return: data records.
+        :rtype: [{}]
+        """
+        super().retrieve_data(session_id)
+
         return []

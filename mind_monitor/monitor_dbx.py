@@ -77,6 +77,15 @@ class MonitorDB(object):
         self.logger.info("Retrieve comments for session: {}.".format(session_id))
         return []
 
+    def retrieve_raw_data(self, session_id):
+        """Retrieve all raw data records of the session.
+        :param session_id: the id of the session
+        :return: data records.
+        :rtype: [{}]
+        """
+        self.logger.info("Retrieve raw data for session: {}.".format(session_id))
+        return []
+
     def retrieve_data(self, session_id):
         """Retrieve all records of the session.
         :param session_id: the id of the session

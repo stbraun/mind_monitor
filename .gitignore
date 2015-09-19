@@ -7,3 +7,5 @@ build/*
 eeg-1.png
 .idea/workspace.xml
 MANIFEST
+eeg.db
+*.csv

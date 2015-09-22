@@ -51,15 +51,13 @@ class CaptureEEGData(object):
         while True:
             try:
                 for json_data in self.mindwave_if.eeg_data():
+                    if not base_time:
+                        base_time = json_data['time']
                     if self.record_raw and 'rawEeg' in json_data:
                         self.raw_data_set.append(json_data['rawEeg'])
-                        if not base_time:
-                            base_time = json_data['time']
                         self.time_data.append(json_data['time'] - base_time)
                     elif not self.record_raw and 'eegPower' in json_data:
                         self.eeg_data_set.append(json_data['eegPower']['delta'])
-                        if not base_time:
-                            base_time = json_data['time']
                         self.time_data.append(json_data['time'] - base_time)
                     self.database.add_record(json_data)
                     self.logger.debug(json_data)

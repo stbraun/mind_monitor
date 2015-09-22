@@ -31,8 +31,7 @@ class SQLiteDB(MonitorDB):
     """SQLite implementation of MonitorDB API."""
 
     def __init__(self):
-        """Initialize persistence mechanism.
-        """
+        """Initialize persistence mechanism."""
         super().__init__()
         self.conn = sqlite3.connect(DATABASE)
         self.setup_db()  # TODO prevent call if DB already there

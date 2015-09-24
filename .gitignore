@@ -9,3 +9,4 @@ eeg-1.png
 MANIFEST
 eeg.db
 *.csv
+eeg_sessions.numbers

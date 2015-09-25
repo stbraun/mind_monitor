@@ -65,6 +65,7 @@ def plot_records(records, t_base=None):
                                xlabel='time [sec]',
                                ylabel='value',
                                title='EEG data for session {}'.format(session_id))
+        plt.ylim((0, 500000))
         spl1.plot(t_data, delta_data, label='delta')
         spl1.plot(t_data, theta_data, label='theta')
         spl1.legend(loc='best')
@@ -76,6 +77,7 @@ def plot_records(records, t_base=None):
         spl2 = fig.add_subplot(412,
                                xlabel='time [sec]',
                                ylabel='value')
+        plt.ylim((0, 70000))
         spl2.plot(t_data, high_alpha_data, label='highAlpha')
         spl2.plot(t_data, high_beta_data, label='highBeta')
         spl2.plot(t_data, high_gamma_data, label='highGamma')
@@ -88,6 +90,7 @@ def plot_records(records, t_base=None):
         spl3 = fig.add_subplot(413,
                                xlabel='time [sec]',
                                ylabel='value')
+        plt.ylim((0, 70000))
         spl3.plot(t_data, low_alpha_data, label='lowAlpha')
         spl3.plot(t_data, low_beta_data, label='lowBeta')
         spl3.plot(t_data, low_gamma_data, label='lowGamma')

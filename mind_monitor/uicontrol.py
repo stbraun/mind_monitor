@@ -23,6 +23,7 @@ Control panel.
 import tkinter as tk
 from tkinter import ttk
 import logging
+from capture import CaptureEEGData
 
 
 class ControlPanel(object):
@@ -34,6 +35,7 @@ class ControlPanel(object):
         self.raw_status = tk.IntVar()
         self.status = tk.StringVar()
         self.panel = self.__create_control_panel(master)
+        self.task = None
 
     def __create_control_panel(self, master):
         """Control panel for gathering EEG data."""
@@ -44,6 +46,7 @@ class ControlPanel(object):
         self.start_button.grid(row=2, column=0)
         self.stop_button = ttk.Button(control_panel, text='Stop', command=self.stop_action)
         self.stop_button.grid(row=2, column=1)
+        self.stop_button.config(state='normal')
 
         self.status.set('Idle')
         ttk.Label(control_panel, textvariable=self.status).grid(row=5)
@@ -53,9 +56,17 @@ class ControlPanel(object):
     def start_action(self):
         """Callback start button."""
         self.logger.info('start_action')
+        self.start_button.config(state='disabled')
+        self.stop_button.config(state='normal')
         self.status.set('Running...')
+        self.task = CaptureEEGData(record_raw=(self.raw_status == 1))
+        self.task.start()
 
     def stop_action(self):
         """Callback stop button."""
         self.logger.info('stop_action')
         self.status.set('Stopped')
+        self.task.stop()
+        self.task.join(timeout=5)
+        self.stop_button.config(state='disabled')
+        self.start_button.config(state='normal')

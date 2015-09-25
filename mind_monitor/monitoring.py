@@ -11,7 +11,7 @@ from monitor_sqlite import SQLiteDB
 TIMESTAMP_FORMAT = '%Y-%m-%d %H:%M:%S'
 
 
-class CaptureEEGData(object):
+class CaptureData(object):
     """Simple class to work with MindWave."""
 
     def __init__(self, record_raw=True):
@@ -77,7 +77,7 @@ def main(args):
     else:
         record_raw = False
     log.initialize_logger()
-    capture = CaptureEEGData(record_raw=record_raw)
+    capture = CaptureData(record_raw=record_raw)
     capture.run()
     capture.close()
     capture.plot_raw_data()

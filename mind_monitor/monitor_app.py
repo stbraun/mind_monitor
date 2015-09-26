@@ -26,8 +26,8 @@ class Application(ttk.Frame):
         """Build UI."""
         ttk.Button(self, text='Quit', command=self.quit).grid(row=3, columnspan=2)
 
-        create_control_panel = ControlPanel(self).panel
-        create_control_panel.grid(row=2, columnspan=2, sticky=(tk.N, tk.W))
+        control_panel = ControlPanel(self)
+        control_panel.grid(row=2, columnspan=2, sticky=(tk.N, tk.W))
 
 log.initialize_logger()
 app = Application()

@@ -33,34 +33,34 @@ STATUS_SET = {'Idle': ('Idle', './resources/status_idle.gif'),
               'Error': ('Error', './resources/status_error.gif'),
               }
 
+TEST = True
 
-class ControlPanel(object):
+
+class ControlPanel(ttk.Frame):
     """Control panel for data gathering."""
     def __init__(self, master):
         self.logger = logging.getLogger('mind_monitor.ui')
+        super().__init__(master, borderwidth=2, relief=tk.GROOVE)
         self.start_button = None
         self.stop_button = None
         self.raw_status = tk.IntVar()
-        self.panel = self.__create_control_panel(master)
         self.task = None
+        self.__create_control_panel()
 
-    def __create_control_panel(self, master):
+    def __create_control_panel(self):
         """Control panel for gathering EEG data."""
-        control_panel = ttk.Frame(master=master, borderwidth=2, relief=tk.GROOVE)
-        ttk.Checkbutton(control_panel, text='capture raw',
+        ttk.Checkbutton(self, text='capture raw',
                         variable=self.raw_status).grid(row=1, column=0)
 
-        self.start_button = ttk.Button(control_panel, text='Start', command=self.start_action)
+        self.start_button = ttk.Button(self, text='Start', command=self.start_action)
         self.start_button.grid(row=2, column=0)
-        self.stop_button = ttk.Button(control_panel, text='Stop', command=self.stop_action)
+        self.stop_button = ttk.Button(self, text='Stop', command=self.stop_action)
         self.stop_button.grid(row=2, column=1)
         self.stop_button.config(state='disabled')
 
-        self.status = StatusField(control_panel, STATUS_SET)
-        self.status.grid(row=5, columnspan=2)
+        self.status = StatusPanel(self, STATUS_SET)
+        self.status.grid(row=5, columnspan=2, sticky=(tk.W))
         self.status.set_status('Idle')
-        control_panel.configure()
-        return control_panel
 
     def start_action(self):
         """Callback start button."""
@@ -68,20 +68,22 @@ class ControlPanel(object):
         self.start_button.state(['disabled'])
         self.stop_button.state(['!disabled'])
         self.status.set_status('Running')
-        self.task = CaptureEEGData(record_raw=(self.raw_status == 1))
-        self.task.start()
+        if not TEST:
+            self.task = CaptureEEGData(record_raw=(self.raw_status.get() == 1))
+            self.task.start()
 
     def stop_action(self):
         """Callback stop button."""
         self.logger.info('stop_action')
         self.status.set_status('Stopped')
-        self.task.stop()
-        self.task.join(timeout=5)
+        if not TEST:
+            self.task.stop()
+            self.task.join(timeout=5)
         self.stop_button.state(['disabled'])
         self.start_button.state(['!disabled'])
 
 
-class StatusField(ttk.Frame):
+class StatusPanel(ttk.Frame):
     """Present a status."""
     def __init__(self, master, status_set):
         super().__init__(master)
@@ -103,7 +105,7 @@ class StatusField(ttk.Frame):
         photo = tk.PhotoImage(file=img)
         image = ttk.Label(self, image=photo)
         image.photo = photo
-        image.grid(row=0, column=0)
+        image.grid(row=0, column=0, sticky=(tk.W))
         lbl = ttk.Label(self, textvariable=self.text)
         lbl.grid(row=0, column=1)
         self.text.set(txt)

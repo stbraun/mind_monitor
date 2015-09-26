@@ -53,7 +53,8 @@ class MindWaveInterface(object):
                         self.logger.warning(
                             "Bad signal quality: {}".format(repr(data[POOR_SIGNAL_LEVEL])))
                         self.bad_quality = True
-                    continue
+                    yield {'quality': 'BAD'}
+                    return
                 if self.bad_quality:
                     self.bad_quality = False
                     self.logger.warning("Signal quality recovered.")

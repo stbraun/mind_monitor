@@ -62,7 +62,7 @@ class CaptureEEGData(threading.Thread):
 
     def run(self):
         """Main loop for data capturing."""
-        self.logger.error('Starting capture thread...')
+        self.logger.info('Starting capture thread...')
         base_time = None
         self.database = SQLiteDB()
         self.mindwave_if = MindWaveInterface()
@@ -71,19 +71,32 @@ class CaptureEEGData(threading.Thread):
         while True:
             try:
                 for json_data in self.mindwave_if.eeg_data():
-                    if not base_time:
-                        base_time = json_data['time']
-                    if self.record_raw and 'rawEeg' in json_data:
-                        self.raw_data_set.append(json_data['rawEeg'])
-                        self.time_data.append(json_data['time'] - base_time)
-                    elif not self.record_raw and 'eegPower' in json_data:
-                        self.eeg_data_set.append(json_data['eegPower']['delta'])
-                        self.time_data.append(json_data['time'] - base_time)
-                    self.database.add_record(json_data)
-                    self.logger.debug(json_data)
+                    if not self.__is_bad_quality(json_data):
+                        if not base_time:
+                            base_time = json_data['time']
+                        if self.record_raw and self.__is_raw_data(json_data):
+                            self.raw_data_set.append(json_data['rawEeg'])
+                            self.time_data.append(json_data['time'] - base_time)
+                        elif not self.record_raw and self.__is_power_data(json_data):
+                            self.eeg_data_set.append(json_data['eegPower']['delta'])
+                            self.time_data.append(json_data['time'] - base_time)
+                        self.database.add_record(json_data)
+                        self.logger.debug(json_data)
                     if self.__stop:
                         self.__close()
                         return
             except Exception as exc:
                 self.logger.error('Exception occurred: {}'.format(repr(exc)))
+
+    def __is_raw_data(self, record):
+        """Determine if record contains raw data."""
+        return 'rawEeg' in record
+
+    def __is_power_data(self, record):
+        """Determine if record contains power data."""
+        return 'eegPower' in record
+
+    def __is_bad_quality(self, record):
+        """Determine if record contains bad quality data."""
+        return 'quality' in record and record['quality'] == 'BAD'
 

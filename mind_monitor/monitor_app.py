@@ -14,8 +14,8 @@ class Application(ttk.Frame):
         super().__init__(master, padding="3 3 12 12")
         self.logger = logging.getLogger('mind_monitor.ui')
 
-        style = ttk.Style()
-        style.configure('.', background='maroon', foreground='blue')
+        # style = ttk.Style()
+        # style.configure('.', background='maroon', foreground='blue')
 
         self.grid(column=0, row=0, sticky=(tk.N, tk.W, tk.E, tk.S))
         self.rowconfigure(0, weight=1)

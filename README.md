@@ -34,6 +34,7 @@ See the constants at top of ```mindwave_interface``` for configuration.
   * nose (for tests only)
   * behave (for tests only)
   * sqlite3
+  * tkinter
   
 #### Database configuration ####
 
@@ -49,6 +50,15 @@ There are tests written for *behave* and others using *pyunit* that may be run w
 ```
 python3 setup.py install
 ```
+
+
+### How to tun the application
+
+```mind_monitor.monitor_app.py``` will pop up a simple UI. 
+
+Currently features available via UI:
+  * Control recording of EEG data.
+  * Plot recorded session data. (all eegPower records)
 
 ### Contribution guidelines ###
 

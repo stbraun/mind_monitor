@@ -59,7 +59,7 @@ class ControlPanel(ttk.Frame):
         self.stop_button.config(state='disabled')
 
         self.status = StatusPanel(self, STATUS_SET)
-        self.status.grid(row=5, columnspan=2, sticky=(tk.W))
+        self.status.grid(row=5, columnspan=2, sticky=(tk.W, tk.E))
         self.status.set_status('Idle')
 
     def start_action(self):

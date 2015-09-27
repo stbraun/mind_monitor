@@ -5,6 +5,7 @@ import log
 import logging
 
 from uicontrol import ControlPanel
+from uigraph import Graphs, FeedGraphData
 
 
 class Application(ttk.Frame):
@@ -24,10 +25,14 @@ class Application(ttk.Frame):
 
     def create_widgets(self):
         """Build UI."""
-        ttk.Button(self, text='Quit', command=self.quit).grid(row=3, columnspan=2)
 
         control_panel = ControlPanel(self)
-        control_panel.grid(row=2, columnspan=2, sticky=(tk.N, tk.W))
+        control_panel.grid(row=1, column=0, sticky=(tk.N, tk.W))
+        ttk.Button(self, text='Quit', command=self.quit).grid(row=1, column=2)
+        graph_panel = Graphs(self)
+        feed_panel = FeedGraphData(self, graph_panel)
+        feed_panel.grid(row=1, column=1, sticky=(tk.N, tk.W))
+        graph_panel.grid(row=2, columnspan=3, sticky=(tk.N, tk.W))
 
 log.initialize_logger()
 app = Application()

@@ -33,7 +33,7 @@ STATUS_SET = {'Idle': ('Idle', './resources/status_idle.gif'),
               'Error': ('Error', './resources/status_error.gif'),
               }
 
-TEST = True
+TEST = False
 
 
 class ControlPanel(ttk.Frame):

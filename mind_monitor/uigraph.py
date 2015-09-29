@@ -1,6 +1,6 @@
 # coding=utf-8
 """
-Graphs.
+PowerGraphs.
 """
 # Copyright (c) 2015 Stefan Braun
 #
@@ -29,7 +29,7 @@ from monitor_common import idx_record
 from monitor_sqlite import SQLiteDB
 
 
-class Graphs(ttk.Frame):
+class PowerGraphs(ttk.Frame):
     """Graphical representation of EEG data."""
 
     def __init__(self, master):
@@ -105,7 +105,7 @@ class Graphs(ttk.Frame):
 
 
 class FeedGraphData(ttk.Frame):
-    """Provide data for Graphs."""
+    """Provide data for PowerGraphs."""
 
     def __init__(self, master, graph_panel):
         self.logger = logging.getLogger('mind_monitor.ui')

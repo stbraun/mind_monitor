@@ -7,7 +7,7 @@ import logging
 
 PORT = 13854
 URL = '127.0.0.1'
-BUFFER_SIZE = 4096
+BUFFER_SIZE = 1024
 MAX_QUALITY_LEVEL = 200
 POOR_SIGNAL_LEVEL = 'poorSignalLevel'
 
@@ -42,25 +42,36 @@ class MindWaveInterface(object):
         """Retrieve eeg data and provide it a record per call.
         Yields one record per call.
         """
+        rest = b''
         while True:
-            buf = self.sock_.recv(BUFFER_SIZE)
+            buf = rest + self.sock_.recv(BUFFER_SIZE)
             raw = str(buf, encoding='iso-8859-1').strip()
-            for record in raw.splitlines(): # TODO prevent data loss!
-                data = json.loads(record, encoding="utf-8")
-                if POOR_SIGNAL_LEVEL in data and data[POOR_SIGNAL_LEVEL] >= MAX_QUALITY_LEVEL:
-                    # ignore bad data
-                    if not self.bad_quality:
-                        self.logger.warning(
-                            "Bad signal quality: {}".format(repr(data[POOR_SIGNAL_LEVEL])))
-                        self.bad_quality = True
-                    yield {'quality': 'BAD'}
-                    return
-                if self.bad_quality:
-                    self.bad_quality = False
-                    self.logger.warning("Signal quality recovered.")
-                data['time'] = time.time()
-                self.logger.info(' yielding {}'.format(data))
-                yield data
+            for record in raw.splitlines():
+                try:
+                    if record[-1:] != '}':
+                        rest = record.encode(encoding='ascii')
+                        break
+                    else:
+                        rest = b''
+                    data = json.loads(record, encoding="utf-8")
+                    if POOR_SIGNAL_LEVEL in data and data[POOR_SIGNAL_LEVEL] >= MAX_QUALITY_LEVEL:
+                        # ignore bad data
+                        if not self.bad_quality:
+                            self.logger.warning(
+                                "Bad signal quality: {}".format(repr(data[POOR_SIGNAL_LEVEL])))
+                            self.bad_quality = True
+                        yield {'quality': 'BAD'}
+                        return
+                    if self.bad_quality:
+                        self.bad_quality = False
+                        self.logger.warning("Signal quality recovered.")
+                    data['time'] = time.time()
+                    self.logger.info(' yielding {}'.format(data))
+                    yield data
+                except ValueError as e:
+                    self.logger.error(
+                        'Exception while evaluating data from device: "{}" -- {}'.format(record,
+                                                                                         repr(e)))
 
     def close(self):
         """Close connection."""

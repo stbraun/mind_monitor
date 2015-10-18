@@ -19,7 +19,6 @@ Capture EEG data.
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 import logging
-from time import sleep
 from mindwave_interface import MindWaveInterface
 from monitor_sqlite import SQLiteDB
 import threading
@@ -88,15 +87,17 @@ class CaptureEEGData(threading.Thread):
             except Exception as exc:
                 self.logger.error('Exception occurred: {}'.format(repr(exc)))
 
-    def __is_raw_data(self, record):
+    @staticmethod
+    def __is_raw_data(record):
         """Determine if record contains raw data."""
         return 'rawEeg' in record
 
-    def __is_power_data(self, record):
+    @staticmethod
+    def __is_power_data(record):
         """Determine if record contains power data."""
         return 'eegPower' in record
 
-    def __is_bad_quality(self, record):
+    @staticmethod
+    def __is_bad_quality(record):
         """Determine if record contains bad quality data."""
         return 'quality' in record and record['quality'] == 'BAD'
-

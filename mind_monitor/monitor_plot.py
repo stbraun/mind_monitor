@@ -2,8 +2,6 @@
 
 import matplotlib.pyplot as plt
 
-from monitor_common import idx_record
-
 
 def plot_data(time_data, eeg_data, xlabel='Time [secs]', ylabel='Values', title='EEG Data'):
     """Plot eeg_data as line plot.
@@ -53,12 +51,12 @@ def plot_records(records, t_base=None):
     :param t_base: optional base value for time.
     """
     if len(records) > 0:
-        session_id = records[0][idx_record['session']]
+        session_id = records[0].session
         if t_base is None:
-            t_base = records[0][1]
-        t_data = [x[idx_record['timestamp']] - t_base for x in records]
-        delta_data = [x[idx_record['delta']] for x in records]
-        theta_data = [x[idx_record['theta']] for x in records]
+            t_base = records[0].timestamp
+        t_data = [r.timestamp - t_base for r in records]
+        delta_data = [r.delta for r in records]
+        theta_data = [r.theta for r in records]
         fig = plt.figure(figsize=(15, 12))
 
         spl1 = fig.add_subplot(411,
@@ -70,9 +68,9 @@ def plot_records(records, t_base=None):
         spl1.plot(t_data, theta_data, label='theta')
         spl1.legend(loc='best')
 
-        high_alpha_data = [x[idx_record['highAlpha']] for x in records]
-        high_beta_data = [x[idx_record['highBeta']] for x in records]
-        high_gamma_data = [x[idx_record['highGamma']] for x in records]
+        high_alpha_data = [r.highAlpha for r in records]
+        high_beta_data = [r.highBeta for r in records]
+        high_gamma_data = [r.highGamma for r in records]
 
         spl2 = fig.add_subplot(412,
                                xlabel='time [sec]',
@@ -83,9 +81,9 @@ def plot_records(records, t_base=None):
         spl2.plot(t_data, high_gamma_data, label='highGamma')
         spl2.legend(loc='best')
 
-        low_alpha_data = [x[idx_record['lowAlpha']] for x in records]
-        low_beta_data = [x[idx_record['lowBeta']] for x in records]
-        low_gamma_data = [x[idx_record['lowGamma']] for x in records]
+        low_alpha_data = [r.lowAlpha for r in records]
+        low_beta_data = [r.lowBeta for r in records]
+        low_gamma_data = [r.lowGamma for r in records]
 
         spl3 = fig.add_subplot(413,
                                xlabel='time [sec]',
@@ -96,8 +94,8 @@ def plot_records(records, t_base=None):
         spl3.plot(t_data, low_gamma_data, label='lowGamma')
         spl3.legend(loc='best')
 
-        attention_data = [x[idx_record['attention']] for x in records]
-        meditation_data = [x[idx_record['meditation']] for x in records]
+        attention_data = [r.attention for r in records]
+        meditation_data = [r.meditation for r in records]
 
         spl4 = fig.add_subplot(414,
                                xlabel='time [sec]',

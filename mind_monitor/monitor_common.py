@@ -30,13 +30,3 @@ TRecord = namedtuple('TRecord', ['session', 'timestamp',
                                  'attention', 'meditation', 'poorSignalQuality'])
 
 TRaw = namedtuple('TRaw', ['session', 'timestamp', 'data'])
-
-# Indices into record tuple
-idx_record = {'session': 0, 'timestamp': 1, 'highAlpha': 2, 'highBeta': 3, 'highGamma': 4,
-              'delta': 5,
-              'theta': 6,
-              'lowAlpha': 7, 'lowBeta': 8, 'lowGamma': 9,
-              'attention': 10, 'meditation': 11, 'poorSignalQuality': 12}
-
-# Indices into raw data record
-idx_raw = {'session': 0, 'timestamp': 1, 'data': 2}

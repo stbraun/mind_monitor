@@ -30,10 +30,14 @@ DATABASE = './resources/eeg.db'
 class SQLiteDB(MonitorDB):
     """SQLite implementation of MonitorDB API."""
 
-    def __init__(self):
-        """Initialize persistence mechanism."""
+    def __init__(self, db=DATABASE):
+        """Initialize persistence mechanism.
+
+        :param db: path to database.
+        :type db: str
+        """
         super().__init__()
-        self.conn = sqlite3.connect(DATABASE)
+        self.conn = sqlite3.connect(db)
         self.setup_db()  # TODO prevent call if DB already there
 
     def setup_db(self):

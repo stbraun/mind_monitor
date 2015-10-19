@@ -25,7 +25,6 @@ import logging
 
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg as FigureCanvas
-from monitor_common import idx_record
 from monitor_sqlite import SQLiteDB
 
 
@@ -49,12 +48,12 @@ class PowerGraphs(ttk.Frame):
         self.logger.info('Ready to plot {} records ...'.format(len(records)))
         self.fig.clear()
         if len(records) > 0:
-            session_id = records[0][idx_record['session']]
+            session_id = records[0].session
             if t_base is None:
-                t_base = records[0][1]
-            t_data = [x[idx_record['timestamp']] - t_base for x in records]
-            delta_data = [x[idx_record['delta']] for x in records]
-            theta_data = [x[idx_record['theta']] for x in records]
+                t_base = records[0].timestamp
+            t_data = [x.timestamp - t_base for x in records]
+            delta_data = [x.delta for x in records]
+            theta_data = [x.theta for x in records]
 
             spl1 = self.fig.add_subplot(411,
                                         xlabel='time [sec]',
@@ -65,9 +64,9 @@ class PowerGraphs(ttk.Frame):
             spl1.plot(t_data, theta_data, label='theta')
             spl1.legend(loc='best')
 
-            high_alpha_data = [x[idx_record['highAlpha']] for x in records]
-            high_beta_data = [x[idx_record['highBeta']] for x in records]
-            high_gamma_data = [x[idx_record['highGamma']] for x in records]
+            high_alpha_data = [x.highAlpha for x in records]
+            high_beta_data = [x.highBeta for x in records]
+            high_gamma_data = [x.highGamma for x in records]
 
             spl2 = self.fig.add_subplot(412,
                                         xlabel='time [sec]',
@@ -78,9 +77,9 @@ class PowerGraphs(ttk.Frame):
             spl2.plot(t_data, high_gamma_data, label='highGamma')
             spl2.legend(loc='best')
 
-            low_alpha_data = [x[idx_record['lowAlpha']] for x in records]
-            low_beta_data = [x[idx_record['lowBeta']] for x in records]
-            low_gamma_data = [x[idx_record['lowGamma']] for x in records]
+            low_alpha_data = [x.lowAlpha for x in records]
+            low_beta_data = [x.lowBeta for x in records]
+            low_gamma_data = [x.lowGamma for x in records]
 
             spl3 = self.fig.add_subplot(413,
                                         xlabel='time [sec]',
@@ -91,8 +90,8 @@ class PowerGraphs(ttk.Frame):
             spl3.plot(t_data, low_gamma_data, label='lowGamma')
             spl3.legend(loc='best')
 
-            attention_data = [x[idx_record['attention']] for x in records]
-            meditation_data = [x[idx_record['meditation']] for x in records]
+            attention_data = [x.attention for x in records]
+            meditation_data = [x.meditation for x in records]
 
             spl4 = self.fig.add_subplot(414,
                                         xlabel='time [sec]',

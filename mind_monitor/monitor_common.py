@@ -19,8 +19,17 @@ Common definitions.
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+from collections import namedtuple
 
 TIMESTAMP_FORMAT = '%Y-%m-%d %H:%M:%S'
+
+TRecord = namedtuple('TRecord', ['session', 'timestamp',
+                                 'highAlpha', 'highBeta', 'highGamma',
+                                 'delta', 'theta',
+                                 'lowAlpha', 'lowBeta', 'lowGamma',
+                                 'attention', 'meditation', 'poorSignalQuality'])
+
+TRaw = namedtuple('TRaw', ['session', 'timestamp', 'data'])
 
 # Indices into record tuple
 idx_record = {'session': 0, 'timestamp': 1, 'highAlpha': 2, 'highBeta': 3, 'highGamma': 4,

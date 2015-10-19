@@ -21,7 +21,7 @@ SQLite implementation.
 
 import sqlite3
 import time
-from monitor_common import TIMESTAMP_FORMAT
+from monitor_common import TIMESTAMP_FORMAT, TRaw, TRecord
 from monitor_dbx import MonitorDB
 
 DATABASE = './resources/eeg.db'
@@ -144,24 +144,24 @@ class SQLiteDB(MonitorDB):
         """Retrieve all raw data records of the session.
         :param session_id: the id of the session
         :return: data records.
-        :rtype: [{}]
+        :rtype: [TRaw]
         """
         super().retrieve_data(session_id)
         stmt = 'SELECT * FROM raw_data WHERE "session"=?'
         cursor = self.conn.cursor()
         cursor.execute(stmt, (session_id,))
-        raw = cursor.fetchall()
-        return raw
+        raw = map(TRaw._make, cursor.fetchall())
+        return list(raw)
 
     def retrieve_data(self, session_id):
         """Retrieve all data records of the session.
         :param session_id: the id of the session
         :return: data records.
-        :rtype: [{}]
+        :rtype: [TRecord]
         """
         super().retrieve_data(session_id)
         cursor = self.conn.cursor()
         stmt = 'select * from records where session=? order by timestamp'
         cursor.execute(stmt, (session_id,))
-        records = cursor.fetchall()
-        return records
+        records = map(TRecord._make, cursor.fetchall())
+        return list(records)

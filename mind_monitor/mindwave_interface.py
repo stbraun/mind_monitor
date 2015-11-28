@@ -42,6 +42,7 @@ class MindWaveInterface(object):
         """Retrieve eeg data and provide it a record per call.
         Yields one record per call.
         """
+        # TASK yield data as TRaw / TRecord / TQuality
         rest = b''
         while True:
             buf = rest + self.sock_.recv(BUFFER_SIZE)
@@ -54,6 +55,7 @@ class MindWaveInterface(object):
                     else:
                         rest = b''
                     data = json.loads(record, encoding="utf-8")
+                    # TASK pull out bad data handling to improve clarity
                     if POOR_SIGNAL_LEVEL in data and data[POOR_SIGNAL_LEVEL] >= MAX_QUALITY_LEVEL:
                         # ignore bad data
                         if not self.bad_quality:

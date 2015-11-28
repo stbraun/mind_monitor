@@ -114,6 +114,7 @@ class SQLiteDB(MonitorDB):
         """Add data record to current session.
         :param record: the data record to store.
         """
+        # TASK modify interface to expect TRaw / TRecord data type
         super().add_record(record)
         cursor = self.conn.cursor()
         if 'rawEeg' in record:

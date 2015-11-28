@@ -10,3 +10,8 @@ MANIFEST
 eeg.db
 *.csv
 eeg_sessions.numbers
+.lock
+model/.vpprefdata
+.dat.nosync154a.8cmU0f
+.dat.nosync*
+bashsupport_project.xml

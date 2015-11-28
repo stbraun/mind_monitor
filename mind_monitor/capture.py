@@ -79,6 +79,7 @@ class CaptureEEGData(threading.Thread):
                         elif not self.record_raw and self.__is_power_data(json_data):
                             self.eeg_data_set.append(json_data['eegPower']['delta'])
                             self.time_data.append(json_data['time'] - base_time)
+                        # TASK - do not store to DB but publish data
                         self.database.add_record(json_data)
                         self.logger.debug(json_data)
                     if self.__stop:

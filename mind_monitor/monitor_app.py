@@ -32,6 +32,7 @@ class Application(ttk.Frame):
         feed_panel.grid(row=1, column=0, sticky=tk.N)
         graph_panel.grid(row=0, column=1, rowspan=3, sticky=(tk.N, tk.W))
 
+        # TASK handle quit in a more sensible way, e.g. wait for threads to terminate ...
         ttk.Button(self, text='Quit', command=self.quit).grid(row=2, column=0, sticky=tk.S)
 
 log.initialize_logger()

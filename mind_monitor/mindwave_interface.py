@@ -5,6 +5,8 @@ import json
 import socket
 import logging
 
+from genutils.strings.encodings import to_bytes, to_str
+
 PORT = 13854
 URL = '127.0.0.1'
 BUFFER_SIZE = 1024
@@ -33,7 +35,7 @@ class MindWaveInterface(object):
         self.sock_ = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock_.connect((url, port))
         req = {"enableRawOutput": enable_raw_output, "format": "Json"}
-        format_req = bytes(json.dumps(req), encoding='iso-8859-1')
+        format_req = to_bytes(json.dumps(req), encoding='ascii')
         self.logger.debug("Request: {}".format(repr(format_req)))
         self.sock_.send(format_req)
         self.logger.info("Connection to ThinkGear Connector established.")
@@ -46,11 +48,11 @@ class MindWaveInterface(object):
         rest = b''
         while True:
             buf = rest + self.sock_.recv(BUFFER_SIZE)
-            raw = str(buf, encoding='iso-8859-1').strip()
+            raw = to_str(buf, encoding='ascii').strip()
             for record in raw.splitlines():
                 try:
                     if record[-1:] != '}':
-                        rest = record.encode(encoding='ascii')
+                        rest = to_bytes(record, encoding='ascii')
                         break
                     else:
                         rest = b''

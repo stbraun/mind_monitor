@@ -10,7 +10,7 @@ setup(
     author='Stefan Braun',
     author_email='sb@action.ms',
     description='Mindwave interface',
-    requires=['matplotlib', 'PyYaml', 'behave', 'pymongo', 'pyzmq'],
+    requires=['matplotlib', 'PyYaml', 'behave', 'pymongo', 'pyzmq', 'genutils'],
     include_package_data=True,
     package_data=dict(resources=['log_config.yaml', ]),
     # entry_points={'console_scripts': ['monitor=monitor:main']}

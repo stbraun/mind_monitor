@@ -1,6 +1,8 @@
 """Test steps for data visualization."""
 from mind_monitor.monitor_plot import plot_data
 
+from behave import *
+
 __author__ = 'sb'
 
 from behave import given, when, then

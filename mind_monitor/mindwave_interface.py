@@ -5,7 +5,7 @@ import json
 import socket
 import logging
 
-from genutils.strings.encodings import to_bytes, to_str
+from genutils.strings import to_bytes, to_str
 
 PORT = 13854
 URL = '127.0.0.1'

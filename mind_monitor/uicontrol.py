@@ -28,11 +28,11 @@ from pkgutil import get_data
 from .capture import CaptureEEGData
 
 
-STATUS_SET = {'Idle': ('Idle', get_data('mind_monitor', '/resources/status_idle.gif')),
-              'Running': ('Running ...', 'mind_monitor/resources/status_ok.gif'),
-              'Stopped': ('Stopped', 'mind_monitor/resources/status_blue.gif'),
-              'Warning': ('Warning', 'mind_monitor/resources/status_warning.gif'),
-              'Error': ('Error', 'mind_monitor/resources/status_error.gif'),
+STATUS_SET = {'Idle': ('Idle', get_data('mind_monitor', 'resources/status_idle.gif')),
+              'Running': ('Running ...', get_data('mind_monitor', 'resources/status_ok.gif')),
+              'Stopped': ('Stopped', get_data('mind_monitor', 'resources/status_blue.gif')),
+              'Warning': ('Warning', get_data('mind_monitor', 'resources/status_warning.gif')),
+              'Error': ('Error', get_data('mind_monitor', 'resources/status_error.gif')),
               }
 
 # Set TEST=True to work on the UI without accessing the device.
@@ -104,7 +104,7 @@ class StatusPanel(ttk.Frame):
         if status not in self.status_set.keys():
             raise Exception('Invalid status: {}'.format(status))
         txt, img = self.status_set[status]
-        self.logger.info('{} --> ({}, {})'.format(status, txt, img))
+        self.logger.info('{} --> {}'.format(status, txt))
         photo = tk.PhotoImage(data=img)
         image = ttk.Label(self, image=photo)
         image.photo = photo

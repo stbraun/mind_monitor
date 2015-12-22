@@ -21,10 +21,11 @@ SQLite implementation.
 
 import sqlite3
 import time
+import os
 from .monitor_common import TIMESTAMP_FORMAT, TRaw, TRecord
 from .monitor_dbx import MonitorDB
 
-DATABASE = './resources/eeg.db'
+DATABASE = '~/mind_monitor/eeg.db'
 
 
 class SQLiteDB(MonitorDB):
@@ -37,7 +38,9 @@ class SQLiteDB(MonitorDB):
         :type db: str
         """
         super().__init__()
-        self.conn = sqlite3.connect(db)
+        self.db = os.path.expanduser(db)
+        self.logger.warning(self.db)
+        self.conn = sqlite3.connect(self.db)
         self.setup_db()  # TODO prevent call if DB already there
 
     def setup_db(self):

@@ -3,7 +3,7 @@
 import logging
 import sys
 
-import log
+from .log import initialize_logger
 from .mindwave_interface import MindWaveInterface
 from .monitor_plot import plot_raw_eeg_data
 from .monitor_sqlite import SQLiteDB
@@ -16,6 +16,7 @@ class CaptureData(object):
 
     def __init__(self, record_raw=True):
         """Simple monitoring app.
+
         :param record_raw: optional - True to capture raw data.
         :type record_raw: Bool
         """
@@ -69,6 +70,7 @@ class CaptureData(object):
 
 def main(args):
     """Simple monitoring app.
+
     :param args: command line parameters.
     :type args: [str]
     """
@@ -76,7 +78,7 @@ def main(args):
         record_raw = True
     else:
         record_raw = False
-    log.initialize_logger()
+    initialize_logger()
     capture = CaptureData(record_raw=record_raw)
     capture.run()
     capture.close()

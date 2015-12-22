@@ -1,5 +1,4 @@
 """Logger initialization."""
-__author__ = 'sb'
 
 import logging
 import logging.config

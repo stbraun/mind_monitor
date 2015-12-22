@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 import tkinter as tk
 from tkinter import ttk
-import log
 import logging
 
+from .log import initialize_logger
 from .uicontrol import ControlPanel
 from .uigraph import PowerGraphs, FeedGraphData
 
@@ -32,7 +32,9 @@ class Application(ttk.Frame):
         # TASK handle quit in a more sensible way, e.g. wait for threads to terminate ...
         ttk.Button(self, text='Quit', command=self.quit).grid(row=2, column=0, sticky=tk.S)
 
-log.initialize_logger()
-app = Application()
-app.master.title('Mind Monitor')
-app.mainloop()
+
+if __name__ == '__main__':
+    initialize_logger()
+    app = Application()
+    app.master.title('Mind Monitor')
+    app.mainloop()

@@ -112,6 +112,7 @@ class SQLiteDB(MonitorDB):
 
     def add_record(self, record):
         """Add data record to current session.
+
         :param record: the data record to store.
         """
         # TASK modify interface to expect TRaw / TRecord data type
@@ -134,6 +135,7 @@ class SQLiteDB(MonitorDB):
 
     def retrieve_session_comments(self, session_id):
         """Retrieve comments stored for session.
+
         :param session_id: the id of the session.
         :return: comments
         :rtype: [str]
@@ -143,6 +145,7 @@ class SQLiteDB(MonitorDB):
 
     def retrieve_raw_data(self, session_id):
         """Retrieve all raw data records of the session.
+
         :param session_id: the id of the session
         :return: data records.
         :rtype: [TRaw]
@@ -156,6 +159,7 @@ class SQLiteDB(MonitorDB):
 
     def retrieve_data(self, session_id):
         """Retrieve all data records of the session.
+
         :param session_id: the id of the session
         :return: data records.
         :rtype: [TRecord]

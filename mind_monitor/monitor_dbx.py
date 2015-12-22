@@ -62,6 +62,7 @@ class MonitorDB(object):
 
     def add_record(self, record):
         """Add data record to current session.
+
         :param record: the data record to store.
         """
         self.logger.info("Adding data record to session: {} - {}.".format(self.session_id, record))
@@ -69,6 +70,7 @@ class MonitorDB(object):
 
     def retrieve_session_comments(self, session_id):
         """Retrieve comments stored for session.
+
         :param session_id: the id of the session.
         :return: comments
         :rtype: [str]
@@ -78,6 +80,7 @@ class MonitorDB(object):
 
     def retrieve_raw_data(self, session_id):
         """Retrieve all raw data records of the session.
+
         :param session_id: the id of the session
         :return: data records.
         :rtype: [{}]
@@ -87,6 +90,7 @@ class MonitorDB(object):
 
     def retrieve_data(self, session_id):
         """Retrieve all records of the session.
+
         :param session_id: the id of the session
         :return: data records.
         :rtype: [{}]

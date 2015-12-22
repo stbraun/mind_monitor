@@ -41,8 +41,8 @@ class TestMindwaveInterface(unittest.TestCase):
         rec = '{"val": 42}'
         data, status, rest = self.interface._handle_record(rec)
         self.assertTrue(status)
-        self.assertIsInstance(rest, bytes)
-        self.assertEquals(b'', rest)
+        self.assertIsInstance(rest, str)
+        self.assertEquals('', rest)
         self.assertIsInstance(data, dict)
         self.assertIn("val", data)
         self.assertEqual(42, data["val"])
@@ -54,13 +54,18 @@ class TestMindwaveInterface(unittest.TestCase):
         data, status, rest = self.interface._handle_record(rec)
         self.assertFalse(status)
         self.assertEquals(rec, rest)
+        # Now call it again with rest and the missing closing brace.
+        data, status, rest = self.interface._handle_record(rest + '}')
+        self.assertTrue(status)
+        self.assertIn('val', data)
+        self.assertEqual('', rest)
 
     def test_handle_record_invalid_no_closing_brace(self):
         """Call handle_record with an incomplete record."""
         rec = '{"val": {"x": 42, "y": 13'
         data, status, rest = self.interface._handle_record(rec)
         self.assertFalse(status)
-        self.assertEquals(to_bytes(rec), rest)
+        self.assertEquals(rec, rest)
 
     def test_eeg_data_yield(self):
         """Test iterating eeg_data."""

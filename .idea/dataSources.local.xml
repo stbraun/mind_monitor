@@ -4,5 +4,9 @@
     <data-source name="SQLite - EEG" uuid="fe7e5198-5744-4e23-849c-fb7b8b1150c2">
       <secret-storage>master_key</secret-storage>
     </data-source>
+    <data-source name="EEG home" uuid="ea31e47a-73e5-4823-8da6-a1b01dfe6cc9">
+      <secret-storage>master_key</secret-storage>
+      <auth-required>false</auth-required>
+    </data-source>
   </component>
 </project>

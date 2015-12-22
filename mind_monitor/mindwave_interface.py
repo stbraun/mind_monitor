@@ -46,19 +46,14 @@ class MindWaveInterface(object):
         Yields one record per call.
         """
         # TASK yield data as TRaw / TRecord / TQuality
-        rest = b''
+        rest = ''
         while True:
-            buf = rest + self.sock_.recv(BUFFER_SIZE)
+            buf = to_bytes(rest, encoding='ascii') + self.sock_.recv(BUFFER_SIZE)
             raw = to_str(buf, encoding='ascii').strip()
             for record in raw.splitlines():
-                try:
-                    data, status, rest = self._handle_record(record)
-                    if status:
-                        yield data
-                except ValueError as e:
-                    self.logger.error(
-                        'Exception while evaluating data from device: "{}" -- {}'.format(record,
-                                                                                         repr(e)))
+                data, status, rest = self._handle_record(record)
+                if status:
+                    yield data
 
     def _handle_record(self, record):
         """Handle a single record.
@@ -66,14 +61,14 @@ class MindWaveInterface(object):
         :param record: record as string
         :type record: str
         :return: (data, status, rest)
-        :rtype: (dict, boolean, bytes)
+        :rtype: (dict, boolean, str)
         """
-        if record[-1:] != '}':  # naive check, doesn't hold in case of nested structures.
-            rest = to_bytes(record, encoding='ascii')
-            return None, False, rest
-        else:
-            rest = b''
-        data = json.loads(record, encoding="utf-8")
+        rest = ''
+        try:
+            data = json.loads(record, encoding="utf-8")
+        except json.JSONDecodeError:
+            # handle incomplete records
+            return None, False, record
         # TASK pull out bad data handling to improve clarity
         if POOR_SIGNAL_LEVEL in data and data[POOR_SIGNAL_LEVEL] >= MAX_QUALITY_LEVEL:
             # ignore bad data

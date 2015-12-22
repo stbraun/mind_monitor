@@ -36,13 +36,52 @@
       <column name="timestamp" sqlType="TEXT" precision="2000000000" scale="10" nullable="true" jdbcType="12"/>
       <column name="description" sqlType="TEXT" precision="2000000000" scale="10" nullable="true" jdbcType="12"/>
       <primary-key columns="id"/>
-      <exported-key name="#FAKE_comments_1" table="comments" schema="" catalog="" columns="session"/>
-      <exported-key name="#FAKE_raw_data_1" table="raw_data" schema="" catalog="" columns="session"/>
-      <exported-key name="#FAKE_records_1" table="records" schema="" catalog="" columns="session"/>
     </table>
     <table name="sqlite_sequence" schema="" catalog="" type="TABLE">
       <column name="name" sqlType="" precision="2000000000" scale="10" nullable="true" jdbcType="12"/>
       <column name="seq" sqlType="" precision="2000000000" scale="10" nullable="true" jdbcType="12"/>
+    </table>
+  </data-source>
+  <data-source name="EEG home" uuid="ea31e47a-73e5-4823-8da6-a1b01dfe6cc9">
+    <database-info product="SQLite" version="3.8.9" jdbc-version="2.1" driver-name="SQLiteJDBC" driver-version="native"/>
+    <case-sensitivity plain-identifiers="mixed" quoted-identifiers="mixed"/>
+    <schema name="" catalog=""/>
+    <table name="comments" schema="" catalog="" type="TABLE">
+      <column name="session" sqlType="INTEGER" precision="0" scale="-1" nullable="true" jdbcType="4"/>
+      <column name="comment" sqlType="TEXT" precision="0" scale="-1" nullable="true" jdbcType="12"/>
+      <foreign-key name="#FAKE_comments_1" columns="session" ref-table="sessions" ref-schema="" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="1"/>
+    </table>
+    <table name="raw_data" schema="" catalog="" type="TABLE">
+      <column name="session" sqlType="INTEGER" precision="0" scale="-1" nullable="true" jdbcType="4"/>
+      <column name="timestamp" sqlType="REAL" precision="0" scale="-1" nullable="true" jdbcType="6"/>
+      <column name="data" sqlType="REAL" precision="0" scale="-1" nullable="true" jdbcType="6"/>
+      <foreign-key name="#FAKE_raw_data_1" columns="session" ref-table="sessions" ref-schema="" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="1"/>
+    </table>
+    <table name="records" schema="" catalog="" type="TABLE">
+      <column name="session" sqlType="INTEGER" precision="0" scale="-1" nullable="true" jdbcType="4"/>
+      <column name="timestamp" sqlType="REAL" precision="0" scale="-1" nullable="true" jdbcType="6"/>
+      <column name="highAlpha" sqlType="INT" precision="0" scale="-1" nullable="true" jdbcType="4"/>
+      <column name="highBeta" sqlType="INT" precision="0" scale="-1" nullable="true" jdbcType="4"/>
+      <column name="highGamma" sqlType="INT" precision="0" scale="-1" nullable="true" jdbcType="4"/>
+      <column name="delta" sqlType="INT" precision="0" scale="-1" nullable="true" jdbcType="4"/>
+      <column name="theta" sqlType="INT" precision="0" scale="-1" nullable="true" jdbcType="4"/>
+      <column name="lowAlpha" sqlType="INT" precision="0" scale="-1" nullable="true" jdbcType="4"/>
+      <column name="lowBeta" sqlType="INT" precision="0" scale="-1" nullable="true" jdbcType="4"/>
+      <column name="lowGamma" sqlType="INT" precision="0" scale="-1" nullable="true" jdbcType="4"/>
+      <column name="attention" sqlType="INT" precision="0" scale="-1" nullable="true" jdbcType="4"/>
+      <column name="meditation" sqlType="INT" precision="0" scale="-1" nullable="true" jdbcType="4"/>
+      <column name="poorSignalLevel" sqlType="INT" precision="0" scale="-1" nullable="true" jdbcType="4"/>
+      <foreign-key name="#FAKE_records_1" columns="session" ref-table="sessions" ref-schema="" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="1"/>
+    </table>
+    <table name="sessions" schema="" catalog="" type="TABLE">
+      <column name="id" sqlType="INTEGER" precision="0" scale="-1" nullable="true" jdbcType="4"/>
+      <column name="timestamp" sqlType="TEXT" precision="0" scale="-1" nullable="true" jdbcType="12"/>
+      <column name="description" sqlType="TEXT" precision="0" scale="-1" nullable="true" jdbcType="12"/>
+      <primary-key columns="id"/>
+    </table>
+    <table name="sqlite_sequence" schema="" catalog="" type="TABLE">
+      <column name="name" sqlType="" precision="0" scale="-1" nullable="true" jdbcType="12"/>
+      <column name="seq" sqlType="" precision="0" scale="-1" nullable="true" jdbcType="12"/>
     </table>
   </data-source>
 </component>

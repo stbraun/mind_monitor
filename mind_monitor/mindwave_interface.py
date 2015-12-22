@@ -15,6 +15,7 @@ POOR_SIGNAL_LEVEL = 'poorSignalLevel'
 
 
 class MindWaveInterface(object):
+
     """Interface to MindWave headset."""
 
     def __init__(self):
@@ -51,31 +52,42 @@ class MindWaveInterface(object):
             raw = to_str(buf, encoding='ascii').strip()
             for record in raw.splitlines():
                 try:
-                    if record[-1:] != '}':
-                        rest = to_bytes(record, encoding='ascii')
-                        break
-                    else:
-                        rest = b''
-                    data = json.loads(record, encoding="utf-8")
-                    # TASK pull out bad data handling to improve clarity
-                    if POOR_SIGNAL_LEVEL in data and data[POOR_SIGNAL_LEVEL] >= MAX_QUALITY_LEVEL:
-                        # ignore bad data
-                        if not self.bad_quality:
-                            self.logger.warning(
-                                "Bad signal quality: {}".format(repr(data[POOR_SIGNAL_LEVEL])))
-                            self.bad_quality = True
-                        yield {'quality': 'BAD'}
-                        return
-                    if self.bad_quality:
-                        self.bad_quality = False
-                        self.logger.warning("Signal quality recovered.")
-                    data['time'] = time.time()
-                    self.logger.info(' yielding {}'.format(data))
-                    yield data
+                    data, status, rest = self._handle_record(record)
+                    if status:
+                        yield data
                 except ValueError as e:
                     self.logger.error(
                         'Exception while evaluating data from device: "{}" -- {}'.format(record,
                                                                                          repr(e)))
+
+    def _handle_record(self, record):
+        """Handle a single record.
+
+        :param record: record as string
+        :type record: str
+        :return: (data, status, rest)
+        :rtype: (dict, boolean, bytes)
+        """
+        if record[-1:] != '}':  # naive check, doesn't hold in case of nested structures.
+            rest = to_bytes(record, encoding='ascii')
+            return None, False, rest
+        else:
+            rest = b''
+        data = json.loads(record, encoding="utf-8")
+        # TASK pull out bad data handling to improve clarity
+        if POOR_SIGNAL_LEVEL in data and data[POOR_SIGNAL_LEVEL] >= MAX_QUALITY_LEVEL:
+            # ignore bad data
+            if not self.bad_quality:
+                self.logger.warning(
+                    "Bad signal quality: {}".format(repr(data[POOR_SIGNAL_LEVEL])))
+                self.bad_quality = True
+            return {'quality': 'BAD'}, True, rest
+        if self.bad_quality:
+            self.bad_quality = False
+            self.logger.warning("Signal quality recovered.")
+        data['time'] = time.time()
+        self.logger.info(' yielding {}'.format(data))
+        return data, True, rest
 
     def close(self):
         """Close connection."""

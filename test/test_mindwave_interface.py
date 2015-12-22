@@ -1,17 +1,17 @@
 """Test accessing data from  ThinkGear connector."""
 
-__author__ = 'sb'
-
 import json
 import socket
 import mindwave_interface
 import unittest
 import unittest.mock as mock
+from genutils.strings import to_bytes
 
 url_port = ('127.0.0.1', 13854)
 
 
 class TestMindwaveInterface(unittest.TestCase):
+
     """Test for eeg data access."""
 
     def setUp(self):
@@ -35,3 +35,46 @@ class TestMindwaveInterface(unittest.TestCase):
                 self.assertEquals(enable_raw, cfg['enableRawOutput'])
                 self.assertIn('format', cfg)
                 self.assertEquals('Json', cfg['format'])
+
+    def test_handle_record_valid(self):
+        """Call handle_record with a valid record."""
+        rec = '{"val": 42}'
+        data, status, rest = self.interface._handle_record(rec)
+        self.assertTrue(status)
+        self.assertIsInstance(rest, bytes)
+        self.assertEquals(b'', rest)
+        self.assertIsInstance(data, dict)
+        self.assertIn("val", data)
+        self.assertEqual(42, data["val"])
+        self.assertIn("time", data)
+
+    def test_handle_record_invalid_closing_brace(self):
+        """Callhandle_record with an incomplete record."""
+        rec = '{"val": {"x": 42, "y": 13}'
+        data, status, rest = self.interface._handle_record(rec)
+        self.assertFalse(status)
+        self.assertEquals(rec, rest)
+
+    def test_handle_record_invalid_no_closing_brace(self):
+        """Call handle_record with an incomplete record."""
+        rec = '{"val": {"x": 42, "y": 13'
+        data, status, rest = self.interface._handle_record(rec)
+        self.assertFalse(status)
+        self.assertEquals(to_bytes(rec), rest)
+
+    def test_eeg_data_yield(self):
+        """Test iterating eeg_data."""
+        recs = ['{"val": 0}', '{"val": 1}']
+        recs_buf = to_bytes('\n'.join(recs), encoding='ascii')
+        with mock.patch.object(socket.socket, 'connect', return_value=None):
+            with mock.patch.object(socket.socket, 'send', return_value=None):
+                with mock.patch.object(socket.socket, 'recv', return_value=recs_buf) as mock_recv:
+                    self.interface = mindwave_interface.MindWaveInterface()
+                    self.interface.connect_to_eeg_server(False)
+                    for i, rec in enumerate(self.interface.eeg_data()):
+                        if i >= len(recs):
+                            assert isinstance(
+                                mock_recv, unittest.mock.MagicMock)
+                            mock_recv.assert_called_with(1024)
+                            return
+                        self.assertEqual(i, rec['val'])

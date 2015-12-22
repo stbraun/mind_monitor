@@ -17,14 +17,16 @@ Capture EEG data.
 # INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
 # AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+# IN THE SOFTWARE.
 import logging
+import threading
 from mindwave_interface import MindWaveInterface
 from monitor_sqlite import SQLiteDB
-import threading
 
 
 class CaptureEEGData(threading.Thread):
+
     """Simple class to work with MindWave."""
 
     def __init__(self, record_raw=True):
@@ -65,7 +67,8 @@ class CaptureEEGData(threading.Thread):
         base_time = None
         self.database = SQLiteDB()
         self.mindwave_if = MindWaveInterface()
-        self.mindwave_if.connect_to_eeg_server(enable_raw_output=self.record_raw)
+        self.mindwave_if.connect_to_eeg_server(
+            enable_raw_output=self.record_raw)
         self.database.new_session()
         while True:
             try:
@@ -75,10 +78,13 @@ class CaptureEEGData(threading.Thread):
                             base_time = json_data['time']
                         if self.record_raw and self.__is_raw_data(json_data):
                             self.raw_data_set.append(json_data['rawEeg'])
-                            self.time_data.append(json_data['time'] - base_time)
+                            self.time_data.append(
+                                json_data['time'] - base_time)
                         elif not self.record_raw and self.__is_power_data(json_data):
-                            self.eeg_data_set.append(json_data['eegPower']['delta'])
-                            self.time_data.append(json_data['time'] - base_time)
+                            self.eeg_data_set.append(
+                                json_data['eegPower']['delta'])
+                            self.time_data.append(
+                                json_data['time'] - base_time)
                         # TASK - do not store to DB but publish data
                         self.database.add_record(json_data)
                         self.logger.debug(json_data)

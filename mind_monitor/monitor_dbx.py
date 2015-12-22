@@ -20,7 +20,6 @@ Abstract class describing interface of persistence mechanism.
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import logging
-import time
 
 TIMESTAMP_FORMAT = '%Y-%m-%d %H:%M:%S'
 

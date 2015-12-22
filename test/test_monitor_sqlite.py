@@ -22,7 +22,7 @@ Test SQLite interface.
 import unittest
 import os
 
-from monitor_sqlite import SQLiteDB
+from mind_monitor.monitor_sqlite import SQLiteDB
 
 
 class TestSQLiteDB(unittest.TestCase):

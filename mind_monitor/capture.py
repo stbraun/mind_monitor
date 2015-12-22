@@ -21,8 +21,8 @@ Capture EEG data.
 # IN THE SOFTWARE.
 import logging
 import threading
-from mindwave_interface import MindWaveInterface
-from monitor_sqlite import SQLiteDB
+from .mindwave_interface import MindWaveInterface
+from .monitor_sqlite import SQLiteDB
 
 
 class CaptureEEGData(threading.Thread):

@@ -2,7 +2,7 @@
 
 import json
 import socket
-import mindwave_interface
+import mind_monitor.mindwave_interface as interface
 import unittest
 import unittest.mock as mock
 from genutils.strings import to_bytes
@@ -15,7 +15,7 @@ class TestMindwaveInterface(unittest.TestCase):
     """Test for eeg data access."""
 
     def setUp(self):
-        self.interface = mindwave_interface.MindWaveInterface()
+        self.interface = interface.MindWaveInterface()
 
     def test_connection_and_config_parameters_for_server(self):
         """Test server parameters.
@@ -69,7 +69,7 @@ class TestMindwaveInterface(unittest.TestCase):
         with mock.patch.object(socket.socket, 'connect', return_value=None):
             with mock.patch.object(socket.socket, 'send', return_value=None):
                 with mock.patch.object(socket.socket, 'recv', return_value=recs_buf) as mock_recv:
-                    self.interface = mindwave_interface.MindWaveInterface()
+                    self.interface = interface.MindWaveInterface()
                     self.interface.connect_to_eeg_server(False)
                     for i, rec in enumerate(self.interface.eeg_data()):
                         if i >= len(recs):

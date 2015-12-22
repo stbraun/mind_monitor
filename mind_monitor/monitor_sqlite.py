@@ -21,8 +21,8 @@ SQLite implementation.
 
 import sqlite3
 import time
-from monitor_common import TIMESTAMP_FORMAT, TRaw, TRecord
-from monitor_dbx import MonitorDB
+from .monitor_common import TIMESTAMP_FORMAT, TRaw, TRecord
+from .monitor_dbx import MonitorDB
 
 DATABASE = './resources/eeg.db'
 

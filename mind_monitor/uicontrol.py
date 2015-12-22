@@ -23,7 +23,7 @@ Control panel.
 import tkinter as tk
 from tkinter import ttk
 import logging
-from capture import CaptureEEGData
+from .capture import CaptureEEGData
 
 
 STATUS_SET = {'Idle': ('Idle', './resources/status_idle.gif'),

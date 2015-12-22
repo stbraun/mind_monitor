@@ -4,8 +4,8 @@ from tkinter import ttk
 import log
 import logging
 
-from uicontrol import ControlPanel
-from uigraph import PowerGraphs, FeedGraphData
+from .uicontrol import ControlPanel
+from .uigraph import PowerGraphs, FeedGraphData
 
 
 class Application(ttk.Frame):

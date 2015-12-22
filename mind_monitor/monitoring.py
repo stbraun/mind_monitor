@@ -4,9 +4,9 @@ import logging
 import sys
 
 import log
-from mindwave_interface import MindWaveInterface
-from monitor_plot import plot_raw_eeg_data
-from monitor_sqlite import SQLiteDB
+from .mindwave_interface import MindWaveInterface
+from .monitor_plot import plot_raw_eeg_data
+from .monitor_sqlite import SQLiteDB
 
 TIMESTAMP_FORMAT = '%Y-%m-%d %H:%M:%S'
 

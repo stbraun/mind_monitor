@@ -15,3 +15,5 @@ model/.vpprefdata
 .dat.nosync154a.8cmU0f
 .dat.nosync*
 bashsupport_project.xml
+.cache/v/cache
+PyMindMonitor.egg-info

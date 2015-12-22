@@ -25,7 +25,7 @@ import logging
 
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg as FigureCanvas
-from monitor_sqlite import SQLiteDB
+from .monitor_sqlite import SQLiteDB
 
 
 class PowerGraphs(ttk.Frame):

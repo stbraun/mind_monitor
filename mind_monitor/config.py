@@ -1,6 +1,8 @@
 # coding=utf-8
 """
-Common definitions.
+Configuration items.
+
+Configure the application for your needs.
 """
 # Copyright (c) 2015 Stefan Braun
 #
@@ -19,14 +21,9 @@ Common definitions.
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from collections import namedtuple
+# Database to use
+DATABASE = '~/mind_monitor/eeg.db'
 
-TIMESTAMP_FORMAT = '%Y-%m-%d %H:%M:%S'
-
-TRecord = namedtuple('TRecord', ['session', 'timestamp',
-                                 'highAlpha', 'highBeta', 'highGamma',
-                                 'delta', 'theta',
-                                 'lowAlpha', 'lowBeta', 'lowGamma',
-                                 'attention', 'meditation', 'poorSignalQuality'])
-
-TRaw = namedtuple('TRaw', ['session', 'timestamp', 'data'])
+# Ports used for internal communication.
+PORT_CONTROL = 33300
+PORT_RECORDS = 33301

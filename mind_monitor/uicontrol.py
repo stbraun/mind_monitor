@@ -25,7 +25,7 @@ from tkinter import ttk
 import logging
 from pkgutil import get_data
 
-from .monitor_common import PORT_CONTROL
+from .config import PORT_CONTROL
 from .publish import publish
 from .capture import CaptureEEGData
 
@@ -87,7 +87,7 @@ class ControlPanel(ttk.Frame):
             self.task.stop()
             self.task.join(timeout=5)
         with publish(PORT_CONTROL) as pub:
-            pub.send_multipart([b'stop', b'New session stopped'])
+            pub.send_multipart([b'stop', b'Session stopped'])
         self.stop_button.state(['disabled'])
         self.start_button.state(['!disabled'])
 

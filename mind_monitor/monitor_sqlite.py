@@ -22,10 +22,9 @@ SQLite implementation.
 import sqlite3
 import time
 import os
+from .config import DATABASE
 from .monitor_common import TIMESTAMP_FORMAT, TRaw, TRecord
 from .monitor_dbx import MonitorDB
-
-DATABASE = '~/mind_monitor/eeg.db'
 
 
 class SQLiteDB(MonitorDB):

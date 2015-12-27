@@ -25,7 +25,7 @@ import threading
 
 from genutils.strings import to_bytes
 
-from .monitor_common import PORT_RECORDS
+from .config import PORT_RECORDS
 from .publish import publish
 from .mindwave_interface import MindWaveInterface
 from .monitor_sqlite import SQLiteDB

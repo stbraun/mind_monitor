@@ -38,9 +38,12 @@ class SQLiteDB(MonitorDB):
         """
         super().__init__()
         self.db = os.path.expanduser(db)
-        self.logger.warning(self.db)
-        self.conn = sqlite3.connect(self.db)
-        self.setup_db()  # TODO prevent call if DB already there
+        self.logger.info(self.db)
+        if not os.path.exists(self.db):
+            self.conn = sqlite3.connect(self.db)
+            self.setup_db()
+        else:
+            self.conn = sqlite3.connect(self.db)
 
     def setup_db(self):
         """Setup database schema."""
@@ -117,13 +120,12 @@ class SQLiteDB(MonitorDB):
 
         :param record: the data record to store.
         """
-        # TASK modify interface to expect TRaw / TRecord data type
         super().add_record(record)
         cursor = self.conn.cursor()
-        if 'rawEeg' in record:
+        if _is_raw_record(record):
             cursor.execute('''INSERT INTO raw_data VALUES(?,?,?)''',
                            (self.session_id, record['time'], record['rawEeg']))
-        elif 'eegPower' in record:
+        elif _is_power_record(record):
             cursor.execute('''INSERT INTO records VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)''',
                            (self.session_id, record['time'],
                             record['eegPower']['highAlpha'], record['eegPower']['highBeta'],
@@ -172,3 +174,11 @@ class SQLiteDB(MonitorDB):
         cursor.execute(stmt, (session_id,))
         records = map(TRecord._make, cursor.fetchall())
         return list(records)
+
+
+def _is_power_record(record):
+    return 'eegPower' in record
+
+
+def _is_raw_record(record):
+    return 'rawEeg' in record

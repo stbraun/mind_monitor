@@ -14,11 +14,15 @@ loggers:
     handlers: [console]
     propagate: no
   mind_monitor.db:
-    level: WARNING
+    level: INFO
     handlers: [console]
     propagate: no
   mind_monitor.interface:
     level: WARNING
+    handlers: [console]
+    propagate: no
+  mind_monitor.capture:
+    level: INFO
     handlers: [console]
     propagate: no
 root:

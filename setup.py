@@ -52,7 +52,7 @@ setup(
     cmdclass={'test': PyTest},
 
     provides=['mind_monitor'],
-    app=["monitor_app.py"],  # TASK
+    app=["mind_monitor/monitor_app.py"],  # TASK
 
     # List of packages that this one depends upon:
     requires=['numpy', 'matplotlib', 'PyYaml', 'pyzmq', 'genutils'],

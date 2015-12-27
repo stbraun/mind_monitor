@@ -21,8 +21,13 @@ Configure the application for your needs.
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# Database to use
+
+# Database to use with sqlite
 DATABASE = '~/mind_monitor/eeg.db'
+
+# url and port of ThinkGear Connector
+MINDWAVE_URL = '127.0.0.1'
+MINDWAVE_PORT = 13854
 
 # Ports used for internal communication.
 PORT_CONTROL = 33300

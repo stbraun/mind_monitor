@@ -45,7 +45,6 @@ class MindWaveInterface(object):
         """Retrieve eeg data and provide it a record per call.
         Yields one record per call.
         """
-        # TASK yield data as TRaw / TRecord / TQuality
         rest = ''
         while True:
             buf = to_bytes(rest, encoding='ascii') + self.sock_.recv(BUFFER_SIZE)
@@ -53,6 +52,7 @@ class MindWaveInterface(object):
             for record in raw.splitlines():
                 data, status, rest = self._handle_record(record)
                 if status:
+                    self.logger.info(' yielding {}'.format(data))
                     yield data
 
     def _handle_record(self, record):
@@ -81,7 +81,6 @@ class MindWaveInterface(object):
             self.bad_quality = False
             self.logger.warning("Signal quality recovered.")
         data['time'] = time.time()
-        self.logger.info(' yielding {}'.format(data))
         return data, True, rest
 
     def close(self):

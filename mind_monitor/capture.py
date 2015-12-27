@@ -25,14 +25,13 @@ import threading
 
 from genutils.strings import to_bytes
 
-from .config import PORT_RECORDS
+from .config import PORT_RECORDS, MINDWAVE_URL, MINDWAVE_PORT
 from .publish import publish
 from .mindwave_interface import MindWaveInterface
 from .monitor_sqlite import SQLiteDB
 
 
 class CaptureEEGData(threading.Thread):
-
     """Simple class to work with MindWave."""
 
     def __init__(self, record_raw=True):
@@ -41,7 +40,7 @@ class CaptureEEGData(threading.Thread):
         :type record_raw: Bool
         """
         threading.Thread.__init__(self, name='CaptureEEGData')
-        self.logger = logging.getLogger('mind_monitor')
+        self.logger = logging.getLogger('mind_monitor.capture')
         self.record_raw = record_raw
         self.logger.info("Application started.")
         self.database = None
@@ -74,7 +73,7 @@ class CaptureEEGData(threading.Thread):
         self.database = SQLiteDB()
         self.mindwave_if = MindWaveInterface()
         self.mindwave_if.connect_to_eeg_server(
-            enable_raw_output=self.record_raw)
+                enable_raw_output=self.record_raw, url=MINDWAVE_URL, port=MINDWAVE_PORT)
         self.database.new_session()
         with publish(PORT_RECORDS)as pub:
             while True:
@@ -86,13 +85,13 @@ class CaptureEEGData(threading.Thread):
                             if self.record_raw and self.__is_raw_data(json_data):
                                 self.raw_data_set.append(json_data['rawEeg'])
                                 self.time_data.append(
-                                    json_data['time'] - base_time)
+                                        json_data['time'] - base_time)
                                 pub.send_multipart([b'raw', to_bytes(json.dumps(json_data))])
                             elif not self.record_raw and self.__is_power_data(json_data):
                                 self.eeg_data_set.append(
-                                    json_data['eegPower']['delta'])
+                                        json_data['eegPower']['delta'])
                                 self.time_data.append(
-                                    json_data['time'] - base_time)
+                                        json_data['time'] - base_time)
                                 pub.send_multipart([b'power', to_bytes(json.dumps(json_data))])
                             # TASK - do not store to DB but publish data
                             self.database.add_record(json_data)

@@ -35,27 +35,42 @@ class PowerGraphs(ttk.Frame):
         self.logger = logging.getLogger('mind_monitor.ui')
         super().__init__(master, borderwidth=2, relief=tk.GROOVE)
         self.fig = Figure(figsize=(15, 12))
+        self.subplot_base = 410
         self.canvas = FigureCanvas(self.fig, master=self)
         self.canvas.get_tk_widget().grid()
         self.fig.clear()
 
-    def plot_records(self, records, t_base=None):
+    def plot_records(self, records, raw_records=None, t_base=None):
         """Plot all power data.
 
         :param records: the data records as list of tuples.
+        :param raw_records: optional raw records.
         :param t_base: optional base value for time.
         """
         self.logger.info('Ready to plot {} records ...'.format(len(records)))
         self.fig.clear()
         if len(records) > 0:
+            if raw_records:
+                session_id = raw_records[0].session
+                if t_base is None:
+                    t_base = raw_records[0].timestamp
+                t_raws = [x.timestamp - t_base for x in raw_records]
+                self.subplot_base = 511
+                # raw wave
+                raw_data = [x.data for x in raw_records]
+                spl0 = self.fig.add_subplot(self._subplot_id(0),
+                                            xlabel='time [sec]',
+                                            ylabel='value',
+                                            title='EEG raw data for session {}'.format(session_id))
+                spl0.plot(t_raws, raw_data, label='raw')
             session_id = records[0].session
             if t_base is None:
                 t_base = records[0].timestamp
             t_data = [x.timestamp - t_base for x in records]
+            # delta and theta waves
             delta_data = [x.delta for x in records]
             theta_data = [x.theta for x in records]
-
-            spl1 = self.fig.add_subplot(411,
+            spl1 = self.fig.add_subplot(self._subplot_id(1),
                                         xlabel='time [sec]',
                                         ylabel='value',
                                         title='EEG data for session {}'.format(session_id))
@@ -64,11 +79,12 @@ class PowerGraphs(ttk.Frame):
             spl1.plot(t_data, theta_data, label='theta')
             spl1.legend(loc='best')
 
+            # high alpha, beta, gamma waves
             high_alpha_data = [x.highAlpha for x in records]
             high_beta_data = [x.highBeta for x in records]
             high_gamma_data = [x.highGamma for x in records]
 
-            spl2 = self.fig.add_subplot(412,
+            spl2 = self.fig.add_subplot(self._subplot_id(2),
                                         xlabel='time [sec]',
                                         ylabel='value')
             # self.canvas.ylim((0, 70000))
@@ -77,11 +93,12 @@ class PowerGraphs(ttk.Frame):
             spl2.plot(t_data, high_gamma_data, label='highGamma')
             spl2.legend(loc='best')
 
+            # low alpha, beta, gamma waves
             low_alpha_data = [x.lowAlpha for x in records]
             low_beta_data = [x.lowBeta for x in records]
             low_gamma_data = [x.lowGamma for x in records]
 
-            spl3 = self.fig.add_subplot(413,
+            spl3 = self.fig.add_subplot(self._subplot_id(3),
                                         xlabel='time [sec]',
                                         ylabel='value')
             # self.canvas.ylim((0, 70000))
@@ -90,10 +107,11 @@ class PowerGraphs(ttk.Frame):
             spl3.plot(t_data, low_gamma_data, label='lowGamma')
             spl3.legend(loc='best')
 
+            # attention and meditaion waves
             attention_data = [x.attention for x in records]
             meditation_data = [x.meditation for x in records]
 
-            spl4 = self.fig.add_subplot(414,
+            spl4 = self.fig.add_subplot(self._subplot_id(4),
                                         xlabel='time [sec]',
                                         ylabel='%')
             spl4.plot(t_data, attention_data, label='attention')
@@ -101,6 +119,9 @@ class PowerGraphs(ttk.Frame):
             spl4.legend(loc='best')
 
             self.canvas.show()
+
+    def _subplot_id(self, cnt):
+        return self.subplot_base + cnt
 
 
 class FeedGraphData(ttk.Frame):
@@ -137,6 +158,7 @@ class FeedGraphData(ttk.Frame):
         session_id = self.session_entry.get()
         self.logger.info('retrieving data for session {} ...'.format(session_id))
         records = self.db.retrieve_data(session_id)
+        raw_records = self.db.retrieve_raw_data(session_id)
         self.__close_connection()
         self.logger.info('{} records retrieved'.format(len(records)))
-        self.graph_panel.plot_records(records)
+        self.graph_panel.plot_records(records, raw_records=raw_records)

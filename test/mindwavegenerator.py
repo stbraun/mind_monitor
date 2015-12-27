@@ -53,6 +53,11 @@ class MindWaveGenerator:
                                "highAlpha": self._rnd(upper=150000)}}
         return to_bytes(json.dumps(record))
 
+    def gen_raw_record(self):
+        """Generate a raw EEG record."""
+        record = {"rawEeg": self._rnd(lower=-2000, upper=2000)}
+        return to_bytes(json.dumps(record))
+
     def _rnd_percent(self):
         return self._rnd()
 

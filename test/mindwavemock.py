@@ -34,6 +34,7 @@ BUFFER_SIZE = 1024
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 try:
     s.bind((HOST, PORT))
+    print('Waiting for client to connect ...')
     s.listen(1)
     conn, addr = s.accept()
     print('Connected by', addr)
@@ -44,13 +45,16 @@ try:
         rec = gen.gen_poor_signal()
         conn.sendall(rec+b'\n')
         print(rec)
-        time.sleep(1)
+        time.sleep(0.5)
     while True:
-#    for _ in range(5):
+        for _ in range(10):
+            rec = gen.gen_raw_record()
+            conn.sendall(rec + b'\n')
+            print(rec)
+            time.sleep(0.1)
         rec = gen.gen_power_record()
         conn.sendall(rec+b'\n')
         print(rec)
-        time.sleep(1)
 except BrokenPipeError:
     # client disconnected.
     pass

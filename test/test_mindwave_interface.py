@@ -81,5 +81,6 @@ class TestMindwaveInterface(unittest.TestCase):
                             assert isinstance(
                                 mock_recv, unittest.mock.MagicMock)
                             mock_recv.assert_called_with(1024)
+                            self.assertEqual(2, mock_recv.call_count)
                             return
                         self.assertEqual(i, rec['val'])

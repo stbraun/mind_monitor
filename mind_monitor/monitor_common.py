@@ -30,3 +30,8 @@ TRecord = namedtuple('TRecord', ['session', 'timestamp',
                                  'attention', 'meditation', 'poorSignalQuality'])
 
 TRaw = namedtuple('TRaw', ['session', 'timestamp', 'data'])
+
+# TASK move to configuration file
+# Ports used for internal communication.
+PORT_CONTROL = 33300
+PORT_RECORDS = 33301

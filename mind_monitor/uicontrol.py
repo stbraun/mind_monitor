@@ -25,6 +25,8 @@ from tkinter import ttk
 import logging
 from pkgutil import get_data
 
+from .monitor_common import PORT_CONTROL
+from .publish import publish
 from .capture import CaptureEEGData
 
 
@@ -71,6 +73,8 @@ class ControlPanel(ttk.Frame):
         self.start_button.state(['disabled'])
         self.stop_button.state(['!disabled'])
         self.status.set_status('Running')
+        with publish(PORT_CONTROL) as pub:
+            pub.send_multipart([b'start', b'New session started'])
         if not TEST:
             self.task = CaptureEEGData(record_raw=(self.raw_status.get() == 1))
             self.task.start()
@@ -82,6 +86,8 @@ class ControlPanel(ttk.Frame):
         if not TEST:
             self.task.stop()
             self.task.join(timeout=5)
+        with publish(PORT_CONTROL) as pub:
+            pub.send_multipart([b'stop', b'New session stopped'])
         self.stop_button.state(['disabled'])
         self.start_button.state(['!disabled'])
 

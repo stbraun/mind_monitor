@@ -19,8 +19,14 @@ Capture EEG data.
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
+import json
 import logging
 import threading
+
+from genutils.strings import to_bytes
+
+from .monitor_common import PORT_RECORDS
+from .publish import publish
 from .mindwave_interface import MindWaveInterface
 from .monitor_sqlite import SQLiteDB
 
@@ -70,29 +76,33 @@ class CaptureEEGData(threading.Thread):
         self.mindwave_if.connect_to_eeg_server(
             enable_raw_output=self.record_raw)
         self.database.new_session()
-        while True:
-            try:
-                for json_data in self.mindwave_if.eeg_data():
-                    if not self.__is_bad_quality(json_data):
-                        if not base_time:
-                            base_time = json_data['time']
-                        if self.record_raw and self.__is_raw_data(json_data):
-                            self.raw_data_set.append(json_data['rawEeg'])
-                            self.time_data.append(
-                                json_data['time'] - base_time)
-                        elif not self.record_raw and self.__is_power_data(json_data):
-                            self.eeg_data_set.append(
-                                json_data['eegPower']['delta'])
-                            self.time_data.append(
-                                json_data['time'] - base_time)
-                        # TASK - do not store to DB but publish data
-                        self.database.add_record(json_data)
-                        self.logger.debug(json_data)
-                    if self.__stop:
-                        self.__close()
-                        return
-            except Exception as exc:
-                self.logger.error('Exception occurred: {}'.format(repr(exc)))
+        with publish(PORT_RECORDS)as pub:
+            while True:
+                try:
+                    for json_data in self.mindwave_if.eeg_data():
+                        if not self.__is_bad_quality(json_data):
+                            if not base_time:
+                                base_time = json_data['time']
+                            if self.record_raw and self.__is_raw_data(json_data):
+                                self.raw_data_set.append(json_data['rawEeg'])
+                                self.time_data.append(
+                                    json_data['time'] - base_time)
+                                pub.send_multipart([b'raw', to_bytes(json.dumps(json_data))])
+                            elif not self.record_raw and self.__is_power_data(json_data):
+                                self.eeg_data_set.append(
+                                    json_data['eegPower']['delta'])
+                                self.time_data.append(
+                                    json_data['time'] - base_time)
+                                pub.send_multipart([b'power', to_bytes(json.dumps(json_data))])
+                            # TASK - do not store to DB but publish data
+                            self.database.add_record(json_data)
+                            self.logger.debug(json_data)
+                        if self.__stop:
+                            self.__close()
+                            return
+                except Exception as exc:
+                    self.logger.error('Exception occurred: {}'.format(repr(exc)))
+                    break
 
     @staticmethod
     def __is_raw_data(record):

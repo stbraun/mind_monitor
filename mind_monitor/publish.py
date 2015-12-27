@@ -39,10 +39,10 @@ def publish(port, protocol='tcp',):
         context.term()
 
 
-def __test():
-    with publish('12345') as pub:
-        for i in range(5):
-            print('sending message using {}'.format(pub))
-            pub.send_multipart([b"sh", bytes("I'm publishing {}".format(i), encoding="utf-8")])
-            print('message sent.')
-    print('closed')
+# def __test():
+#     with publish('12345') as pub:
+#         for i in range(5):
+#             print('sending message using {}'.format(pub))
+#             pub.send_multipart([b"sh", bytes("I'm publishing {}".format(i), encoding="utf-8")])
+#             print('message sent.')
+#     print('closed')

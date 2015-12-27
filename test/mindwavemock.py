@@ -22,15 +22,14 @@ Mocks a MindWave device on socket level for testing.
 
 
 import socket
+import time
+
+from mindwavegenerator import MindWaveGenerator
 
 HOST = ''
 PORT = 13854
 BUFFER_SIZE = 1024
-MAX_QUALITY_LEVEL = 200
-POOR_SIGNAL_LEVEL = 'poorSignalLevel'
 
-msg_bad_quality = b'{"poorSignalLevel": 200}\n'
-msg_good_quality = b'{"eSense" : { "meditation" : 75, "attention" : 54 }, "poorSignalLevel" : 0, "eegPower" : { "delta" : 874006, "lowGamma" : 3197, "theta" : 53351, "lowBeta" : 6113, "highBeta" : 9367, "lowAlpha" : 36106, "highGamma" : 27478, "highAlpha" : 9544 } }\n'
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 try:
@@ -38,14 +37,23 @@ try:
     s.listen(1)
     conn, addr = s.accept()
     print('Connected by', addr)
+    data = conn.recv(BUFFER_SIZE)
+    print('Start serving ...')
+    gen = MindWaveGenerator()
+    for _ in range(5):
+        rec = gen.gen_poor_signal()
+        conn.sendall(rec+b'\n')
+        print(rec)
+        time.sleep(1)
     while True:
-        data = conn.recv(BUFFER_SIZE)
-        if not data:
-            break
-        for _ in range(10):
-            conn.sendall(msg_bad_quality)
-        for _ in range(20):
-            conn.sendall(msg_good_quality)
+#    for _ in range(5):
+        rec = gen.gen_power_record()
+        conn.sendall(rec+b'\n')
+        print(rec)
+        time.sleep(1)
+except BrokenPipeError:
+    # client disconnected.
+    pass
 finally:
     print('shutting down ...')
     conn.close()

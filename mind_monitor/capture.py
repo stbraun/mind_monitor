@@ -27,7 +27,7 @@ from genutils.strings import to_bytes
 
 from .config import PORT_RECORDS, MINDWAVE_URL, MINDWAVE_PORT
 from .publish import publish
-from .mindwave_interface import MindWaveInterface
+from .mindwave_interface import MindWaveInterface, is_bad_quality
 from .monitor_sqlite import SQLiteDB
 
 
@@ -45,9 +45,6 @@ class CaptureEEGData(threading.Thread):
         self.logger.info("Application started.")
         self.database = None
         self.mindwave_if = None
-        self.raw_data_set = []
-        self.eeg_data_set = []
-        self.time_data = []
         self.__stop = False
 
     def __close(self):
@@ -69,33 +66,22 @@ class CaptureEEGData(threading.Thread):
     def run(self):
         """Main loop for data capturing."""
         self.logger.info('Starting capture thread...')
-        base_time = None
-        self.database = SQLiteDB()
+        self.database = SQLiteDB()  # TASK - move database related stuff out of this class
         self.mindwave_if = MindWaveInterface()
         self.mindwave_if.connect_to_eeg_server(
                 enable_raw_output=self.record_raw, url=MINDWAVE_URL, port=MINDWAVE_PORT)
-        self.database.new_session()
+        self.database.new_session()  # TASK - move database stuff
         with publish(PORT_RECORDS)as pub:
             while True:
                 try:
                     for json_data in self.mindwave_if.eeg_data():
-                        if not self.__is_bad_quality(json_data):
-                            if not base_time:
-                                base_time = json_data['time']
+                        self.logger.debug(json_data)
+                        if not is_bad_quality(json_data):
                             if self.record_raw and self.__is_raw_data(json_data):
-                                self.raw_data_set.append(json_data['rawEeg'])
-                                self.time_data.append(
-                                        json_data['time'] - base_time)
                                 pub.send_multipart([b'raw', to_bytes(json.dumps(json_data))])
-                            elif not self.record_raw and self.__is_power_data(json_data):
-                                self.eeg_data_set.append(
-                                        json_data['eegPower']['delta'])
-                                self.time_data.append(
-                                        json_data['time'] - base_time)
+                            elif self.__is_power_data(json_data):
                                 pub.send_multipart([b'power', to_bytes(json.dumps(json_data))])
-                            # TASK - do not store to DB but publish data
-                            self.database.add_record(json_data)
-                            self.logger.debug(json_data)
+                            self.database.add_record(json_data)  # TASK - move database stuff
                         if self.__stop:
                             self.__close()
                             return
@@ -112,8 +98,3 @@ class CaptureEEGData(threading.Thread):
     def __is_power_data(record):
         """Determine if record contains power data."""
         return 'eegPower' in record
-
-    @staticmethod
-    def __is_bad_quality(record):
-        """Determine if record contains bad quality data."""
-        return 'quality' in record and record['quality'] == 'BAD'

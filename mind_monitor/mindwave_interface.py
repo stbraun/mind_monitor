@@ -70,14 +70,13 @@ class MindWaveInterface(object):
             # handle incomplete records
             return None, False, record
         # TASK pull out bad data handling to improve clarity
-        if POOR_SIGNAL_LEVEL in data and data[POOR_SIGNAL_LEVEL] >= MAX_QUALITY_LEVEL:
+        if is_bad_quality(data):
             # ignore bad data
             if not self.bad_quality:
                 self.logger.warning(
                     "Bad signal quality: {}".format(repr(data[POOR_SIGNAL_LEVEL])))
                 self.bad_quality = True
-            return {'quality': 'BAD'}, True, rest
-        if self.bad_quality:
+        elif self.bad_quality:
             self.bad_quality = False
             self.logger.warning("Signal quality recovered.")
         data['time'] = time.time()
@@ -86,3 +85,14 @@ class MindWaveInterface(object):
     def close(self):
         """Close connection."""
         self.sock_.close()
+
+
+def is_bad_quality(record):
+    """Check quality of data.
+
+    :param record: the record to check
+    :type record: dict
+    :return: True if quality is bad.
+    :rtype: boolean
+    """
+    return POOR_SIGNAL_LEVEL in record and record[POOR_SIGNAL_LEVEL] >= MAX_QUALITY_LEVEL

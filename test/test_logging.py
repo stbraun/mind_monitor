@@ -3,8 +3,6 @@ import logging
 import logging.config
 import log
 
-__author__ = 'sb'
-
 import unittest
 
 

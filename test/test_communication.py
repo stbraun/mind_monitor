@@ -1,5 +1,4 @@
 """Test the communication with mindwave device via sockets."""
-__author__ = 'sb'
 
 import unittest
 import logging

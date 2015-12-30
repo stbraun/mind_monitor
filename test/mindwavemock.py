@@ -19,12 +19,10 @@ Mocks a MindWave device on socket level for testing.
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-
-
 import socket
 import time
 
-from mindwavegenerator import MindWaveGenerator
+from mindwavegenerator import gen_poor_signal, gen_raw_record, gen_power_record
 
 HOST = ''
 PORT = 13854
@@ -32,27 +30,27 @@ BUFFER_SIZE = 1024
 
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+conn = None
 try:
     s.bind((HOST, PORT))
     print('Waiting for client to connect ...')
     s.listen(1)
-    conn, addr = s.accept()
-    print('Connected by', addr)
+    conn, address = s.accept()
+    print('Connected by', address)
     data = conn.recv(BUFFER_SIZE)
     print('Start serving ...')
-    gen = MindWaveGenerator()
     for _ in range(5):
-        rec = gen.gen_poor_signal()
+        rec = gen_poor_signal()
         conn.sendall(rec+b'\r')
         print(rec)
         time.sleep(0.5)
     while True:
         for _ in range(10):
-            rec = gen.gen_raw_record()
+            rec = gen_raw_record()
             conn.sendall(rec + b'\r')
             print(rec)
             time.sleep(0.1)
-        rec = gen.gen_power_record()
+        rec = gen_power_record()
         conn.sendall(rec+b'\r')
         print(rec)
 except BrokenPipeError:
@@ -60,4 +58,5 @@ except BrokenPipeError:
     pass
 finally:
     print('shutting down ...')
-    conn.close()
+    if conn is not None:
+        conn.close()

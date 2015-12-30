@@ -23,21 +23,18 @@ import json
 
 from genutils.strings import to_str
 
-from mindwavegenerator import MindWaveGenerator
+from mindwavegenerator import gen_power_record, gen_poor_signal
 
 
 class TestMindWaveGenerator(unittest.TestCase):
-    def setUp(self):
-        self.gen = MindWaveGenerator()
-
-    def test_gen_poor_signaä(self):
-        record = self.gen.gen_poor_signal()
+    def test_gen_poor_signal(self):
+        record = gen_poor_signal()
         self.assertIsInstance(record, bytes)
         data = json.loads(to_str(record))
         self.assertEqual(200, data['poorSignalLevel'])
 
     def test_gen_power_record(self):
-        record = self.gen.gen_power_record()
+        record = gen_power_record()
         self.assertIsInstance(record, bytes)
         data = json.loads(to_str(record))
         self.assertLessEqual(data['poorSignalLevel'], 50)

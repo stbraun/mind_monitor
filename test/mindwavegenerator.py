@@ -20,64 +20,63 @@ A generator for simulated mindwave records.
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-
-# msg_bad_quality = b'{"poorSignalLevel": 200}\n'
-# msg_good_quality = b'{"eSense" : { "meditation" : 75, "attention" : 54 }, ' \
-#                    b'"poorSignalLevel" : 0, ' \
-#                    b'"eegPower" : { "delta" : 874006, "lowGamma" : 3197, "theta" : 53351, ' \
-#                    b'"lowBeta" : 6113, "highBeta" : 9367, "lowAlpha" : 36106, ' \
-#                    b'"highGamma" : 27478, "highAlpha" : 9544 } }\n'
-
 import json
 import random
 
 from genutils.strings import to_bytes
 
 
-class MindWaveGenerator:
-    def gen_poor_signal(self):
-        """Generate a poor signal record."""
-        return b'{"poorSignalLevel": 200}'
+def _rnd_int(lower=0, upper=100):
+    return random.randint(lower, upper)
 
-    def gen_power_record(self):
-        """Generate a record with randomized power data."""
-        record = {"eSense": {"meditation": self._rnd_percent(), "attention": self._rnd_percent()},
-                  "poorSignalLevel": self._rnd_int(upper=50),
-                  "eegPower": {"delta": self._rnd_int(upper=150000),
-                               "lowGamma": self._rnd_int(upper=150000),
-                               "theta": self._rnd_int(upper=150000),
-                               "lowBeta": self._rnd_int(upper=150000),
-                               "highBeta": self._rnd_int(upper=150000),
-                               "lowAlpha": self._rnd_int(upper=150000),
-                               "highGamma": self._rnd_int(upper=150000),
-                               "highAlpha": self._rnd_int(upper=150000)}}
-        return to_bytes(json.dumps(record))
 
-    def gen_raw_record(self):
-        """Generate a raw EEG record."""
-        record = {"rawEeg": self._rnd_int(lower=-2000, upper=2000)}
-        return to_bytes(json.dumps(record))
+def _rnd_float(lower=0, upper=100):
+    return random.uniform(lower, upper)
 
-    def gen_blink_event(self):
-        """Generate a blinking event."""
-        record = {"blinkStrength": self._rnd_percent()}
-        return to_bytes(json.dumps(record))
 
-    def gen_familiarity(self):
-        """Generate a familiarity event."""
-        record = {"familiarity": self._rnd_float()}
-        return to_bytes(json.dumps(record))
+def _rnd_percent():
+    return _rnd_int()
 
-    def gen_mental_effort(self):
-        """Generate a mental effort event."""
-        record = {"mentalEffort": self._rnd_float()}
-        return to_bytes(json.dumps(record))
 
-    def _rnd_percent(self):
-        return self._rnd_int()
+def gen_poor_signal():
+    """Generate a poor signal record."""
+    return b'{"poorSignalLevel": 200}'
 
-    def _rnd_int(self, lower=0, upper=100):
-        return random.randint(lower, upper)
 
-    def _rnd_float(self, lower=0, upper=100):
-        return random.uniform(lower, upper)
+def gen_power_record():
+    """Generate a record with randomized power data."""
+    record = {"eSense": {"meditation": _rnd_percent(), "attention": _rnd_percent()},
+              "poorSignalLevel": _rnd_int(upper=50),
+              "eegPower": {"delta": _rnd_int(upper=150000),
+                           "lowGamma": _rnd_int(upper=150000),
+                           "theta": _rnd_int(upper=150000),
+                           "lowBeta": _rnd_int(upper=150000),
+                           "highBeta": _rnd_int(upper=150000),
+                           "lowAlpha": _rnd_int(upper=150000),
+                           "highGamma": _rnd_int(upper=150000),
+                           "highAlpha": _rnd_int(upper=150000)}}
+    return to_bytes(json.dumps(record))
+
+
+def gen_raw_record():
+    """Generate a raw EEG record."""
+    record = {"rawEeg": _rnd_int(lower=-2000, upper=2000)}
+    return to_bytes(json.dumps(record))
+
+
+def gen_blink_event():
+    """Generate a blinking event."""
+    record = {"blinkStrength": _rnd_percent()}
+    return to_bytes(json.dumps(record))
+
+
+def gen_familiarity():
+    """Generate a familiarity event."""
+    record = {"familiarity": _rnd_float()}
+    return to_bytes(json.dumps(record))
+
+
+def gen_mental_effort():
+    """Generate a mental effort event."""
+    record = {"mentalEffort": _rnd_float()}
+    return to_bytes(json.dumps(record))

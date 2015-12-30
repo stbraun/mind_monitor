@@ -42,24 +42,42 @@ class MindWaveGenerator:
     def gen_power_record(self):
         """Generate a record with randomized power data."""
         record = {"eSense": {"meditation": self._rnd_percent(), "attention": self._rnd_percent()},
-                  "poorSignalLevel": self._rnd(upper=50),
-                  "eegPower": {"delta": self._rnd(upper=150000),
-                               "lowGamma": self._rnd(upper=150000),
-                               "theta": self._rnd(upper=150000),
-                               "lowBeta": self._rnd(upper=150000),
-                               "highBeta": self._rnd(upper=150000),
-                               "lowAlpha": self._rnd(upper=150000),
-                               "highGamma": self._rnd(upper=150000),
-                               "highAlpha": self._rnd(upper=150000)}}
+                  "poorSignalLevel": self._rnd_int(upper=50),
+                  "eegPower": {"delta": self._rnd_int(upper=150000),
+                               "lowGamma": self._rnd_int(upper=150000),
+                               "theta": self._rnd_int(upper=150000),
+                               "lowBeta": self._rnd_int(upper=150000),
+                               "highBeta": self._rnd_int(upper=150000),
+                               "lowAlpha": self._rnd_int(upper=150000),
+                               "highGamma": self._rnd_int(upper=150000),
+                               "highAlpha": self._rnd_int(upper=150000)}}
         return to_bytes(json.dumps(record))
 
     def gen_raw_record(self):
         """Generate a raw EEG record."""
-        record = {"rawEeg": self._rnd(lower=-2000, upper=2000)}
+        record = {"rawEeg": self._rnd_int(lower=-2000, upper=2000)}
+        return to_bytes(json.dumps(record))
+
+    def gen_blink_event(self):
+        """Generate a blinking event."""
+        record = {"blinkStrength": self._rnd_percent()}
+        return to_bytes(json.dumps(record))
+
+    def gen_familiarity(self):
+        """Generate a familiarity event."""
+        record = {"familiarity": self._rnd_float()}
+        return to_bytes(json.dumps(record))
+
+    def gen_mental_effort(self):
+        """Generate a mental effort event."""
+        record = {"mentalEffort": self._rnd_float()}
         return to_bytes(json.dumps(record))
 
     def _rnd_percent(self):
-        return self._rnd()
+        return self._rnd_int()
 
-    def _rnd(self, lower=0, upper=100):
+    def _rnd_int(self, lower=0, upper=100):
         return random.randint(lower, upper)
+
+    def _rnd_float(self, lower=0, upper=100):
+        return random.uniform(lower, upper)

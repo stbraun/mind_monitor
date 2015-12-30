@@ -43,17 +43,17 @@ try:
     gen = MindWaveGenerator()
     for _ in range(5):
         rec = gen.gen_poor_signal()
-        conn.sendall(rec+b'\n')
+        conn.sendall(rec+b'\r')
         print(rec)
         time.sleep(0.5)
     while True:
         for _ in range(10):
             rec = gen.gen_raw_record()
-            conn.sendall(rec + b'\n')
+            conn.sendall(rec + b'\r')
             print(rec)
             time.sleep(0.1)
         rec = gen.gen_power_record()
-        conn.sendall(rec+b'\n')
+        conn.sendall(rec+b'\r')
         print(rec)
 except BrokenPipeError:
     # client disconnected.

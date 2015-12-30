@@ -73,10 +73,10 @@ class PowerGraphs(ttk.Frame):
             spl1 = self.fig.add_subplot(self._subplot_id(1),
                                         xlabel='time [sec]',
                                         ylabel='value',
-                                        title='EEG data for session {}'.format(session_id))
+                                        title='EEG power data for session {}'.format(session_id))
             # self.canvas.ylim((0, 500000))
-            spl1.plot(t_data, delta_data, label='delta')
-            spl1.plot(t_data, theta_data, label='theta')
+            spl1.semilogy(t_data, delta_data, label='delta')
+            spl1.semilogy(t_data, theta_data, label='theta')
             spl1.legend(loc='best')
 
             # high alpha, beta, gamma waves
@@ -88,9 +88,9 @@ class PowerGraphs(ttk.Frame):
                                         xlabel='time [sec]',
                                         ylabel='value')
             # self.canvas.ylim((0, 70000))
-            spl2.plot(t_data, high_alpha_data, label='highAlpha')
-            spl2.plot(t_data, high_beta_data, label='highBeta')
-            spl2.plot(t_data, high_gamma_data, label='highGamma')
+            spl2.semilogy(t_data, high_alpha_data, label='highAlpha')
+            spl2.semilogy(t_data, high_beta_data, label='highBeta')
+            spl2.semilogy(t_data, high_gamma_data, label='highGamma')
             spl2.legend(loc='best')
 
             # low alpha, beta, gamma waves
@@ -102,9 +102,9 @@ class PowerGraphs(ttk.Frame):
                                         xlabel='time [sec]',
                                         ylabel='value')
             # self.canvas.ylim((0, 70000))
-            spl3.plot(t_data, low_alpha_data, label='lowAlpha')
-            spl3.plot(t_data, low_beta_data, label='lowBeta')
-            spl3.plot(t_data, low_gamma_data, label='lowGamma')
+            spl3.semilogy(t_data, low_alpha_data, label='lowAlpha')
+            spl3.semilogy(t_data, low_beta_data, label='lowBeta')
+            spl3.semilogy(t_data, low_gamma_data, label='lowGamma')
             spl3.legend(loc='best')
 
             # attention and meditaion waves

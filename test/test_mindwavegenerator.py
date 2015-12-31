@@ -23,7 +23,8 @@ import json
 
 from genutils.strings import to_str
 
-from mindwavegenerator import gen_power_record, gen_poor_signal
+from mindwavegenerator import gen_power_record, gen_poor_signal, gen_blink_event, gen_mental_effort, \
+    gen_familiarity
 
 
 class TestMindWaveGenerator(unittest.TestCase):
@@ -38,3 +39,24 @@ class TestMindWaveGenerator(unittest.TestCase):
         self.assertIsInstance(record, bytes)
         data = json.loads(to_str(record))
         self.assertLessEqual(data['poorSignalLevel'], 50)
+
+    def test_gen_blink_event(self):
+        record = gen_blink_event()
+        self.assertIsInstance(record, bytes)
+        data = json.loads(to_str(record))
+        self.assertIn('blinkStrength', data)
+        self.assertLessEqual(data['blinkStrength'], 100)
+
+    def test_gen_familiarity(self):
+        record = gen_familiarity()
+        self.assertIsInstance(record, bytes)
+        data = json.loads(to_str(record))
+        self.assertIn('familiarity', data)
+        self.assertEqual(float, type(data['familiarity']))
+
+    def test_gen_mental_effort(self):
+        record = gen_mental_effort()
+        self.assertIsInstance(record, bytes)
+        data = json.loads(to_str(record))
+        self.assertIn('mentalEffort', data)
+        self.assertEqual(float, type(data['mentalEffort']))

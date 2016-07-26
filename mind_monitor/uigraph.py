@@ -4,20 +4,30 @@ PowerGraphs.
 """
 # Copyright (c) 2015 Stefan Braun
 #
-# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
-# associated documentation files (the "Software"), to deal in the Software without restriction,
-# including without limitation the rights to use, copy, modify, merge, publish, distribute,
-# sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and
+# associated documentation files (the "Software"), to deal in the Software
+# without restriction,
+# including without limitation the rights to use, copy, modify, merge,
+# publish, distribute,
+# sublicense, and/or sell copies of the Software, and to permit persons to
+# whom the Software is
 # furnished to do so, subject to the following conditions:
 #
-# The above copyright notice and this permission notice shall be included in all copies or
+# The above copyright notice and this permission notice shall be included in
+#  all copies or
 # substantial portions of the Software.
 #
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-# INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
-# AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-# DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#  IMPLIED,
+# INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+# FOR A PARTICULAR PURPOSE
+# AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+#  LIABLE FOR ANY CLAIM,
+# DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+# OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
 
 import tkinter as tk
 from tkinter import ttk
@@ -61,7 +71,9 @@ class PowerGraphs(ttk.Frame):
                 spl0 = self.fig.add_subplot(self._subplot_id(0),
                                             xlabel='time [sec]',
                                             ylabel='value',
-                                            title='EEG raw data for session {}'.format(session_id))
+                                            title='EEG raw data for session '
+                                                  '{}'.format(
+                                                session_id))
                 spl0.plot(t_raws, raw_data, label='raw')
             session_id = records[0].session
             if t_base is None:
@@ -73,7 +85,9 @@ class PowerGraphs(ttk.Frame):
             spl1 = self.fig.add_subplot(self._subplot_id(1),
                                         xlabel='time [sec]',
                                         ylabel='value',
-                                        title='EEG power data for session {}'.format(session_id))
+                                        title='EEG power data for session {'
+                                              '}'.format(
+                                            session_id))
             # self.canvas.ylim((0, 500000))
             spl1.semilogy(t_data, delta_data, label='delta')
             spl1.semilogy(t_data, theta_data, label='theta')
@@ -121,6 +135,13 @@ class PowerGraphs(ttk.Frame):
             self.canvas.show()
 
     def _subplot_id(self, cnt):
+        """Generate subplot id.
+
+        :param cnt: number of subplot.
+        :type cnt: int
+        :return: generated id
+        :rtype: int
+        """
         return self.subplot_base + cnt
 
 
@@ -131,7 +152,7 @@ class FeedGraphData(ttk.Frame):
         self.logger = logging.getLogger('mind_monitor.ui')
         super().__init__(master, borderwidth=2, relief=tk.GROOVE)
         self.graph_panel = graph_panel
-        self.db = None
+        self.database = None
         self.session_entry = None
         self.plot_btn = None
         self.lbl_session_id = tk.StringVar()
@@ -143,22 +164,27 @@ class FeedGraphData(ttk.Frame):
         ttk.Label(self, textvariable=self.lbl_session_id).grid(row=0, column=0)
         self.session_entry = ttk.Entry(self)
         self.session_entry.grid(row=1, column=0)
-        self.plot_btn = ttk.Button(self, text='plot data', command=self.__retrieve_data)
+        self.plot_btn = ttk.Button(self, text='plot data',
+                                   command=self.__retrieve_data)
         self.plot_btn.grid(row=2, column=0)
 
     def __connect_db(self):
-        self.db = SQLiteDB()
+        '''Connect to database.'''
+        self.database = SQLiteDB()
 
     def __close_connection(self):
-        if self.db is not None:
-            self.db.close()
+        '''Close database connection.'''
+        if self.database is not None:
+            self.database.close()
 
     def __retrieve_data(self):
+        '''Retrieve data from database and feed into graph panel.'''
         self.__connect_db()
         session_id = self.session_entry.get()
-        self.logger.info('retrieving data for session {} ...'.format(session_id))
-        records = self.db.retrieve_data(session_id)
-        raw_records = self.db.retrieve_raw_data(session_id)
+        self.logger.info(
+            'retrieving data for session {} ...'.format(session_id))
+        records = self.database.retrieve_data(session_id)
+        raw_records = self.database.retrieve_raw_data(session_id)
         self.__close_connection()
         self.logger.info('{} records retrieved'.format(len(records)))
         self.graph_panel.plot_records(records, raw_records=raw_records)

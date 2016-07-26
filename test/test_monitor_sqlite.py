@@ -30,7 +30,7 @@ class TestSQLiteDB(unittest.TestCase):
 
     def setUp(self):
         # Create test database
-        self.DATABASE = "test.db"
+        self.DATABASE = "test.database"
         self.db = SQLiteDB(db=self.DATABASE)
         self.db.setup_db()
 

@@ -4,20 +4,30 @@ Control panel.
 """
 # Copyright (c) 2015 Stefan Braun
 #
-# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
-# associated documentation files (the "Software"), to deal in the Software without restriction,
-# including without limitation the rights to use, copy, modify, merge, publish, distribute,
-# sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and
+# associated documentation files (the "Software"), to deal in the Software
+# without restriction,
+# including without limitation the rights to use, copy, modify, merge,
+# publish, distribute,
+# sublicense, and/or sell copies of the Software, and to permit persons to
+# whom the Software is
 # furnished to do so, subject to the following conditions:
 #
-# The above copyright notice and this permission notice shall be included in all copies or
+# The above copyright notice and this permission notice shall be included in
+#  all copies or
 # substantial portions of the Software.
 #
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-# INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
-# AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-# DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#  IMPLIED,
+# INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+# FOR A PARTICULAR PURPOSE
+# AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+#  LIABLE FOR ANY CLAIM,
+# DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+# OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
 
 
 import tkinter as tk
@@ -29,13 +39,15 @@ from .config import PORT_CONTROL
 from .publish import publish
 from .capture import CaptureEEGData
 
-
-STATUS_SET = {'Idle': ('Idle', get_data('mind_monitor', 'resources/status_idle.gif')),
-              'Running': ('Running ...', get_data('mind_monitor', 'resources/status_ok.gif')),
-              'Stopped': ('Stopped', get_data('mind_monitor', 'resources/status_blue.gif')),
-              'Warning': ('Warning', get_data('mind_monitor', 'resources/status_warning.gif')),
-              'Error': ('Error', get_data('mind_monitor', 'resources/status_error.gif')),
-              }
+STATUS_SET = dict(
+    Idle=('Idle', get_data('mind_monitor', 'resources/status_idle.gif')),
+    Running=(
+        'Running ...', get_data('mind_monitor', 'resources/status_ok.gif')),
+    Stopped=(
+        'Stopped', get_data('mind_monitor', 'resources/status_blue.gif')),
+    Warning=(
+        'Warning', get_data('mind_monitor', 'resources/status_warning.gif')),
+    Error=('Error', get_data('mind_monitor', 'resources/status_error.gif')))
 
 # Set TEST=True to work on the UI without accessing the device.
 TEST = False
@@ -43,6 +55,7 @@ TEST = False
 
 class ControlPanel(ttk.Frame):
     """Control panel for data gathering."""
+
     def __init__(self, master):
         self.logger = logging.getLogger('mind_monitor.ui')
         super().__init__(master, borderwidth=2, relief=tk.GROOVE)
@@ -57,9 +70,11 @@ class ControlPanel(ttk.Frame):
         ttk.Checkbutton(self, text='capture raw',
                         variable=self.raw_status).grid(row=1, column=0)
 
-        self.start_button = ttk.Button(self, text='Start', command=self.start_action)
+        self.start_button = ttk.Button(self, text='Start',
+                                       command=self.start_action)
         self.start_button.grid(row=2, column=0)
-        self.stop_button = ttk.Button(self, text='Stop', command=self.stop_action)
+        self.stop_button = ttk.Button(self, text='Stop',
+                                      command=self.stop_action)
         self.stop_button.grid(row=2, column=1)
         self.stop_button.config(state='disabled')
 
@@ -94,6 +109,7 @@ class ControlPanel(ttk.Frame):
 
 class StatusPanel(ttk.Frame):
     """Present a status."""
+
     def __init__(self, master, status_set):
         super().__init__(master)
         self.logger = logging.getLogger('mind_monitor.ui')

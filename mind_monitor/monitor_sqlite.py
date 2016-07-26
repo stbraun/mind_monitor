@@ -4,20 +4,30 @@ SQLite implementation.
 """
 # Copyright (c) 2015 Stefan Braun
 #
-# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
-# associated documentation files (the "Software"), to deal in the Software without restriction,
-# including without limitation the rights to use, copy, modify, merge, publish, distribute,
-# sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and
+# associated documentation files (the "Software"), to deal in the Software
+# without restriction,
+# including without limitation the rights to use, copy, modify, merge,
+# publish, distribute,
+# sublicense, and/or sell copies of the Software, and to permit persons to
+# whom the Software is
 # furnished to do so, subject to the following conditions:
 #
-# The above copyright notice and this permission notice shall be included in all copies or
+# The above copyright notice and this permission notice shall be included in
+#  all copies or
 # substantial portions of the Software.
 #
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-# INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
-# AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-# DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+#  IMPLIED,
+# INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+# FOR A PARTICULAR PURPOSE
+# AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+#  LIABLE FOR ANY CLAIM,
+# DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+# OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
 
 import sqlite3
 import time
@@ -37,20 +47,21 @@ class SQLiteDB(MonitorDB):
         :type db: str
         """
         super().__init__()
-        self.db = os.path.expanduser(db)
-        self.logger.info(self.db)
-        if not os.path.exists(self.db):
-            self.conn = sqlite3.connect(self.db)
+        self.db_name = os.path.expanduser(db)
+        self.logger.info(self.db_name)
+        if not os.path.exists(self.db_name):
+            self.conn = sqlite3.connect(self.db_name)
             self.setup_db()
         else:
-            self.conn = sqlite3.connect(self.db)
+            self.conn = sqlite3.connect(self.db_name)
 
     def setup_db(self):
         """Setup database schema."""
         cursor = self.conn.cursor()
         # Create tables
         try:
-            cursor.execute('''CREATE TABLE sessions ( id INTEGER PRIMARY KEY AUTOINCREMENT,
+            cursor.execute('''CREATE TABLE sessions ( id INTEGER PRIMARY KEY
+            AUTOINCREMENT,
                               timestamp TEXT,
                               description TEXT)''')
             cursor.execute('''CREATE TABLE comments (
@@ -61,10 +72,13 @@ class SQLiteDB(MonitorDB):
                               timestamp REAL,
                               data REAL)''')
             cursor.execute('''CREATE TABLE records (
-                                session INTEGER REFERENCES "sessions" ("id"), timestamp REAL,
-                                highAlpha INT, highBeta INT,  highGamma INT, delta INT, theta INT,
+                                session INTEGER REFERENCES "sessions" (
+                                "id"), timestamp REAL,
+                                highAlpha INT, highBeta INT,  highGamma INT,
+                                delta INT, theta INT,
                                 lowAlpha INT, lowBeta INT, lowGamma INT,
-                                attention INT, meditation INT, poorSignalLevel INT)''')
+                                attention INT, meditation INT,
+                                poorSignalLevel INT)''')
         except Exception as e:
             self.logger.warning(e)
             pass
@@ -93,7 +107,7 @@ class SQLiteDB(MonitorDB):
         return session_id
 
     def close(self):
-        """Close db."""
+        """Close database."""
         self.conn.close()
 
     def add_comment_to_session(self, comment, session_id=None):
@@ -110,9 +124,11 @@ class SQLiteDB(MonitorDB):
             session = self.session_id
         else:
             session = session_id
-        self.logger.info("Adding comment to session {} - {}.".format(session, comment))
+        self.logger.info(
+            "Adding comment to session {} - {}.".format(session, comment))
         cursor = self.conn.cursor()
-        cursor.execute('''INSERT INTO comments VALUES(?, ?)''', (session, comment))
+        cursor.execute('''INSERT INTO comments VALUES(?, ?)''',
+                       (session, comment))
         self.conn.commit()
 
     def add_record(self, record):
@@ -126,15 +142,17 @@ class SQLiteDB(MonitorDB):
             cursor.execute('''INSERT INTO raw_data VALUES(?,?,?)''',
                            (self.session_id, record['time'], record['rawEeg']))
         elif _is_power_record(record):
-            cursor.execute('''INSERT INTO records VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)''',
-                           (self.session_id, record['time'],
-                            record['eegPower']['highAlpha'], record['eegPower']['highBeta'],
-                            record['eegPower']['highGamma'],
-                            record['eegPower']['delta'], record['eegPower']['theta'],
-                            record['eegPower']['lowAlpha'], record['eegPower']['lowBeta'],
-                            record['eegPower']['lowGamma'],
-                            record['eSense']['attention'], record['eSense']['meditation'],
-                            record['poorSignalLevel']))
+            cursor.execute(
+                '''INSERT INTO records VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)''',
+                (self.session_id, record['time'],
+                 record['eegPower']['highAlpha'],
+                 record['eegPower']['highBeta'],
+                 record['eegPower']['highGamma'],
+                 record['eegPower']['delta'], record['eegPower']['theta'],
+                 record['eegPower']['lowAlpha'], record['eegPower']['lowBeta'],
+                 record['eegPower']['lowGamma'],
+                 record['eSense']['attention'], record['eSense']['meditation'],
+                 record['poorSignalLevel']))
         self.conn.commit()
 
     def retrieve_session_comments(self, session_id):
@@ -158,7 +176,7 @@ class SQLiteDB(MonitorDB):
         stmt = 'SELECT * FROM raw_data WHERE "session"=?'
         cursor = self.conn.cursor()
         cursor.execute(stmt, (session_id,))
-        raw = map(TRaw._make, cursor.fetchall())
+        raw = [TRaw._make(rec) for rec in cursor.fetchall()]
         return list(raw)
 
     def retrieve_data(self, session_id):
@@ -170,15 +188,29 @@ class SQLiteDB(MonitorDB):
         """
         super().retrieve_data(session_id)
         cursor = self.conn.cursor()
-        stmt = 'select * from records where session=? order by timestamp'
+        stmt = 'SELECT * FROM records WHERE session=? ORDER BY timestamp'
         cursor.execute(stmt, (session_id,))
-        records = map(TRecord._make, cursor.fetchall())
+        records = [TRecord._make(rec) for rec in cursor.fetchall()]
         return list(records)
 
 
 def _is_power_record(record):
+    """Is a power record?
+
+    :param record: record to evaluate.
+    :type record: dict
+    :return: True if is power record
+    :rtype: boolean
+    """
     return 'eegPower' in record
 
 
 def _is_raw_record(record):
+    """Is a raw record?
+
+    :param record: record to evaluate.
+    :type record: dict
+    :return: True if is raw record
+    :rtype: boolean
+    """
     return 'rawEeg' in record
